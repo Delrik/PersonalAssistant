@@ -1,4 +1,4 @@
-from address_book import AddressBook
+from models.address_book import AddressBook
 
 
 def handle_error(func):

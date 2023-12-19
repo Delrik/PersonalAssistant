@@ -1,5 +1,5 @@
-from phone import Phone
-from name import Name
+from .fields.phone import Phone
+from .fields.name import Name
 
 
 class Record:

@@ -1,6 +1,6 @@
 from collections import UserDict
 import pickle
-from record import Record
+from .record import Record
 
 
 class AddressBook(UserDict):
