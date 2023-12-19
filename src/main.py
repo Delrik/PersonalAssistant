@@ -1,4 +1,4 @@
-from models import AddressBook
+from address_book import AddressBook
 
 
 def handle_error(func):
@@ -70,7 +70,7 @@ def main():
         command, *args = parse_input(user_input)
 
         if command in ["close", "exit"]:
-            address_book.save_to_file()
+            book.save_to_file()
             print("Good bye!")
             break
         elif command == "hello":
