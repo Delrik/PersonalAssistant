@@ -1,0 +1,70 @@
+@startuml AddressBook
+
+
+Class AddressBook {
+    records
+    add_record(name)
+    remove_record(name)
+}
+Class Record {
+    __init__(name)
+    name
+    phone
+    birthday
+    address
+    email
+    note
+    add_phone(phone)
+    remove_phone(phone)
+    add_birthday(birthday)
+    remove_birthday()
+    add_address(address)
+    remove_address()
+    add_email(email)
+    remove_email()
+    add_note(note)
+    remove_note(note)
+}
+
+Class Name
+Class Phone {
+    -check_validity(str)
+}
+Class Birthday {
+    -check_validity(str)
+}
+Class Address
+Class Email {
+    -check_validity(str)
+}
+Class Note {
+    __init__(title, text)
+    add_tag(tag)
+    remove_tag(tag)
+}
+Class NoteTitle
+Class NoteText
+Class NoteTag
+
+AddressBook "1" *-- "0..*" Record
+Note "1" *-- "1" NoteTitle
+Note "1" *-- "1" NoteText
+Note "1" *-- "0..*" NoteTag
+Record "1" *-- "1" Name
+Record "1" *-- "0..*" Phone
+Record "1" *-- "0..1" Birthday
+Record "1" *-- "0..1" Address
+Record "1" *-- "0..1" Email
+Record "1" *-- "0..*" Note
+
+' Class Field
+' Field <|-- Name
+' Field <|-- Phone
+' Field <|-- Birthday
+' Field <|-- Address
+' Field <|-- Email
+' Field <|-- NoteTitle
+' Field <|-- NoteText
+' Field <|-- NoteTag
+
+@enduml
