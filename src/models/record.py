@@ -17,20 +17,32 @@ class Record:
         self.address = Address(address)
 
     def add_note(self, title, text):
-        note = self.findNoteByTitle(title)
-        if note != None:
+        note_index = self.findNoteIndexByTitle(title)
+        if note_index > -1:
             raise KeyError(f"The note with this title '{title}' already exists.")
         self.notes.append(Note(title, text))
 
     def remove_note(self, title):
-        note = self.findNoteByTitle(title)
-        if note == None:
-            raise KeyError(f"The note with this title '{title}' does not exist.")
+        self.check_note_availability(title)
         self.notes = list(filter(lambda note: note.title != title, self.notes))
 
-    def findNoteByTitle(self, title):
-        note = list(filter(lambda note: note.title == title, self.notes))
-        return None if len(note) == 0 else note[0]
+    def change_note(self, title, new_text):
+        note_index = self.check_note_availability(title)
+        self.notes[note_index].text = new_text
+
+    def check_note_availability(self, title):
+        note_index = self.find_note_index_by_title(title)
+        if note_index == -1:
+            raise KeyError(f"The note with this title '{title}' does not exist.")
+        return note_index
+
+    def find_note_index_by_title(self, title):
+        index = -1
+        for i, note in enumerate(self.notes):
+            if note.title == title:
+                index = i
+                break
+        return index
 
     def __str__(self):
         return f"Contact name: {self.name}, phone: {self.phone}, notes: {self.notes}"

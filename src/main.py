@@ -89,6 +89,20 @@ def remove_note(args, book):
     return "Note removed."
 
 
+@handle_error
+def change_note(args, book):
+    if len(args) == 0:
+        raise IndexError("Enter contact name, note title, new note text")
+    if len(args) == 1:
+        raise IndexError("Enter note title and new note text")
+    if len(args) == 2:
+        raise IndexError("Enter new note text")
+    name, title, new_text = args
+    book.change_note(name, title, new_text)
+    # TODO: Print
+    return "Note changed."
+
+
 def main():
     book = (
         AddressBook.read_from_file()
@@ -120,6 +134,8 @@ def main():
             print(add_note(args, book))
         elif command == "remove-note":
             print(remove_note(args, book))
+        elif command == "change-note":
+            print(change_note(args, book))
         else:
             Printer().print_invalid_command()
 
