@@ -1,5 +1,7 @@
 from models.address_book import AddressBook
 from models.printer import Printer
+from models.completer import CommandCompleter
+from prompt_toolkit import PromptSession
 
 
 def handle_error(func):
@@ -168,6 +170,44 @@ def find_tag(args, book):
     return book.findNotesByTag(tag)
 
 
+def add_email(args, book):
+    if len(args) < 2:
+        raise IndexError("Enter name and email")
+
+    name, email = args
+    contact = book.find(name)
+    contact.set_email(email)
+
+    # TODO: Print
+    return f"Email added for {name}."
+
+
+@handle_error
+def remove_email(args, book):
+    if len(args) == 0:
+        raise IndexError("Enter name")
+
+    name = args[0]
+    contact = book.find(name)
+    contact.remove_email()
+
+    # TODO: Print
+    return f"Email removed for {name}."
+
+
+@handle_error
+def change_email(args, book):
+    if len(args) < 2:
+        raise IndexError("Enter name and new email")
+
+    name, new_email = args
+    contact = book.find(name)
+    contact.set_email(new_email)
+
+    # TODO: Print
+    return f"Email changed for {name}."
+
+
 def main():
     book = (
         AddressBook.read_from_file()
@@ -177,8 +217,9 @@ def main():
 
     Printer().welcome()
 
+    session = PromptSession(completer=CommandCompleter())
     while True:
-        user_input = input("Enter a command: ")
+        user_input = session.prompt("Enter a command: ")
         command, *args = parse_input(user_input, lower=True)
 
         if command in ["close", "exit"]:
@@ -209,6 +250,12 @@ def main():
             print(add_tag(args, book))
         elif command == "find-tag":
             print(find_tag(args, book))
+        elif command == "add-email":
+            print(add_email(args, book))
+        elif command == "remove-email":
+            print(remove_email(args, book))
+        elif command == "change-email":
+            print(change_email(args, book))
         else:
             Printer().print_invalid_command()
 
