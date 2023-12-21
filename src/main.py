@@ -72,7 +72,7 @@ def add_note(args, book):
     if len(args) == 2:
         raise IndexError("Enter note text")
     name, title, text = args
-    book.add_note(name, title, text)
+    book.find(name).add_note(title, text)
     # TODO: Print
     return "Note added."
 
@@ -84,7 +84,7 @@ def remove_note(args, book):
     if len(args) == 1:
         raise IndexError("Enter note title")
     name, title = args
-    book.remove_note(name, title)
+    book.find(name).remove_note(title)
     # TODO: Print
     return "Note removed."
 
@@ -98,7 +98,7 @@ def change_note(args, book):
     if len(args) == 2:
         raise IndexError("Enter new note text")
     name, title, new_text = args
-    book.change_note(name, title, new_text)
+    book.find(name).change_note(title, new_text)
     # TODO: Print
     return "Note changed."
 
@@ -112,7 +112,7 @@ def change_note_title(args, book):
     if len(args) == 2:
         raise IndexError("Enter new note title")
     name, title, new_title = args
-    book.change_note_title(name, title, new_title)
+    book.find(name).change_note_title(title, new_title)
     # TODO: Print
     return "Note title changed."
 
@@ -124,7 +124,20 @@ def find_note(args, book):
     if len(args) == 1:
         raise IndexError("Enter note title")
     name, title = args
-    return book.find_note(name, title)
+    return book.find(name).find_note(title)
+
+
+@handle_error
+def add_tag(args, book):
+    if len(args) == 0:
+        raise IndexError("Enter contact name, note title and tag name")
+    if len(args) == 1:
+        raise IndexError("Enter note title and tag name")
+    if len(args) == 2:
+        raise IndexError("Enter tag name")
+    name, title, tag = args
+    book.find(name).add_tag(title, tag)
+    return "Tag added."
 
 
 def main():
@@ -164,6 +177,8 @@ def main():
             print(change_note_title(args, book))
         elif command == "find-note":
             print(find_note(args, book))
+        elif command == "add-tag":
+            print(add_tag(args, book))
         else:
             Printer().print_invalid_command()
 

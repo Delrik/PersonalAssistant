@@ -38,6 +38,10 @@ class Record:
         note_index = self.check_note_availability(title)
         return self.notes[note_index]
 
+    def add_tag(self, title, tag):
+        note_index = self.check_note_availability(title)
+        self.notes[note_index].add_tag(tag)
+
     def check_note_availability(self, title):
         note_index = self.find_note_index_by_title(title)
         if note_index == -1:

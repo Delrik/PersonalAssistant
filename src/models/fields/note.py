@@ -5,6 +5,8 @@ class Note:
         self.tags = []
 
     def add_tag(self, tag):
+        if tag in self.tags:
+            raise KeyError(f"This tag '{tag}' already exists.")
         self.tags.append(tag)
 
     def remove_tag(self, tag):
