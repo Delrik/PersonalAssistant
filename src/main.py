@@ -6,12 +6,8 @@ def handle_error(func):
     def inner(*args, **kwargs):
         try:
             return func(*args, **kwargs)
-        except ValueError as e:
-            return e
-        except KeyError as e:
-            return e
-        except IndexError as e:
-            return e
+        except Exception as e:
+            Printer().print_error(e)
 
     return inner
 
