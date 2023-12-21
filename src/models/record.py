@@ -1,5 +1,6 @@
 from .fields.phone import Phone
 from .fields.name import Name
+from .fields.address import Address
 
 
 class Record:
@@ -9,6 +10,9 @@ class Record:
 
     def add_phone(self, phone):
         self.phone = Phone(phone)
+
+    def set_address(self, address):
+        self.address = Address(address)
 
     def __str__(self):
         return f"Contact name: {self.name}, phone: {self.phone}"

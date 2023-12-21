@@ -6,14 +6,20 @@ from .record import Record
 class AddressBook(UserDict):
     def add_record(self, name, phone):
         if name in self.data:
-            raise KeyError(f"The contact with this name '{name}' already exists.")
+            raise KeyError(
+                f"The contact with this name '{name}' already exists.")
         record = Record(name)
         record.add_phone(phone)
         self.data[name] = record
 
-    def find(self, name):
+    def set_address(self, name, address):
+        record = self.find(name)
+        record.set_address(address)
+
+    def find(self, name) -> Record:
         if not name in self.data:
-            raise KeyError(f"The contact with this name '{name}' does not exist.")
+            raise KeyError(
+                f"The contact with this name '{name}' does not exist.")
         return self.data[name]
 
     def findAll(self):
