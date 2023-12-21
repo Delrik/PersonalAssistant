@@ -30,6 +30,10 @@ class Record:
         note_index = self.check_note_availability(title)
         self.notes[note_index].text = new_text
 
+    def change_note_title(self, title, new_title):
+        note_index = self.check_note_availability(title)
+        self.notes[note_index].title = new_title
+
     def check_note_availability(self, title):
         note_index = self.find_note_index_by_title(title)
         if note_index == -1:

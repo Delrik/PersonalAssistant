@@ -27,6 +27,10 @@ class AddressBook(UserDict):
         record = self.find(name)
         record.change_note(title, new_text)
 
+    def change_note_title(self, name, title, new_title):
+        record = self.find(name)
+        record.change_note_title(title, new_title)
+
     def find(self, name) -> Record:
         if not name in self.data:
             raise KeyError(f"The contact with this name '{name}' does not exist.")

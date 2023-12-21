@@ -103,6 +103,20 @@ def change_note(args, book):
     return "Note changed."
 
 
+@handle_error
+def change_note_title(args, book):
+    if len(args) == 0:
+        raise IndexError("Enter contact name, note title, new note title")
+    if len(args) == 1:
+        raise IndexError("Enter note title and new note title")
+    if len(args) == 2:
+        raise IndexError("Enter new note title")
+    name, title, new_title = args
+    book.change_note_title(name, title, new_title)
+    # TODO: Print
+    return "Note title changed."
+
+
 def main():
     book = (
         AddressBook.read_from_file()
@@ -136,6 +150,8 @@ def main():
             print(remove_note(args, book))
         elif command == "change-note":
             print(change_note(args, book))
+        elif command == "change-note-title":
+            print(change_note_title(args, book))
         else:
             Printer().print_invalid_command()
 
