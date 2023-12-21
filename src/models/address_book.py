@@ -12,10 +12,6 @@ class AddressBook(UserDict):
         record.add_phone(phone)
         self.data[name] = record
 
-    def set_address(self, name, address):
-        record = self.find(name)
-        record.set_address(address)
-
     def find(self, name) -> Record:
         if not name in self.data:
             raise KeyError(

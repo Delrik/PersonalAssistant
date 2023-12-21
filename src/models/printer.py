@@ -29,3 +29,9 @@ class Printer(metaclass=SingletonMeta):
 
     def print_phone_removed(self):
         print("Phone removed.")
+
+    def print_address_added(self):
+        print("Address added.")
+
+    def print_address_changed(self):
+        print("Address changed.")

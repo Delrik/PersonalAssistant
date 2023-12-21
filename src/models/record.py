@@ -7,6 +7,7 @@ class Record:
     def __init__(self, name):
         self.name = Name(name)
         self.phones = []
+        self.address = None
 
     def add_phone(self, phone):
         phone = Phone(phone)
@@ -30,7 +31,7 @@ class Record:
             raise KeyError(
                     f"{phone} not found, add correct number please.")
 
-    def set_address(self, address):
+    def add_address(self, address):
         self.address = Address(address)
 
     def __str__(self):

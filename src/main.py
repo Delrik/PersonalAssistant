@@ -33,13 +33,10 @@ def add_contact(args, book):
     # TODO: Print
     return "Contact added."
 
-
 @handle_error
 def add_phone(args, book):
-    if len(args) == 0:
+    if len(args) != 2:
         raise IndexError("Enter name and phone number")
-    if len(args) == 1:
-        raise IndexError("Enter phone number")
     name, phone = args
     book.find(name).add_phone(phone)
     Printer().print_phone_added()
@@ -54,10 +51,8 @@ def change_phone(args, book):
 
 @handle_error
 def remove_phone(args, book):
-    if len(args) == 0:
+    if len(args) != 2:
         raise IndexError("Enter name and phone number")
-    if len(args) == 1:
-        raise IndexError("Enter phone number")
     name, phone = args
     book.find(name).remove_phone(phone)
     Printer().print_phone_removed()
@@ -71,6 +66,27 @@ def get_contact_phone(args, book):
     # TODO: Print
     return book.find(name).phone
 
+@handle_error
+def add_address(args, book):
+    if len(args) != 1:
+        raise IndexError("Enter name")
+    name = args[0]
+    user = book.find(name)
+    address = input(f"Enter address for {name}: ").strip()
+    if len(address):
+        user.add_address(address)    
+    Printer().print_address_added()
+
+@handle_error
+def change_address(args, book):
+    if len(args) != 1:
+        raise IndexError("Enter name")
+    name = args[0]
+    user = book.find(name)
+    address = input(f"Enter new address for {name}: ").strip()
+    if len(address):
+        user.add_address(address)    
+    Printer().print_address_changed()
 
 @handle_error
 def get_all_contacts(book):
@@ -107,6 +123,10 @@ def main():
             print(remove_phone(args, book))
         elif command == "phone":
             print(get_contact_phone(args, book))
+        elif command == "add-address":
+            print(add_address(args, book))
+        elif command == "change-address":
+            print(change_address(args, book))
         elif command == "all":
             print(get_all_contacts(book))
         else:
