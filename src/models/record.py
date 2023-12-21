@@ -17,38 +17,28 @@ class Record:
         self.address = Address(address)
 
     def add_note(self, title, text):
-        note_index = self.find_note_index_by_title(title)
-        if note_index > -1:
-            raise KeyError(f"The note with this title '{title}' already exists.")
         self.notes.append(Note(title, text))
 
     def remove_note(self, title):
-        self.check_note_availability(title)
         self.notes = list(
             filter(lambda note: note.title.lower() != title.lower(), self.notes)
         )
 
     def change_note(self, title, new_text):
-        note_index = self.check_note_availability(title)
+        note_index = self.find_note_index_by_title(title)
         self.notes[note_index].text = new_text
 
     def change_note_title(self, title, new_title):
-        note_index = self.check_note_availability(title)
+        note_index = self.find_note_index_by_title(title)
         self.notes[note_index].title = new_title
 
     def find_note(self, title):
-        note_index = self.check_note_availability(title)
+        note_index = self.find_note_index_by_title(title)
         return self.notes[note_index]
 
     def add_tag(self, title, tag):
-        note_index = self.check_note_availability(title)
-        self.notes[note_index].add_tag(tag)
-
-    def check_note_availability(self, title):
         note_index = self.find_note_index_by_title(title)
-        if note_index == -1:
-            raise KeyError(f"The note with this title '{title}' does not exist.")
-        return note_index
+        self.notes[note_index].add_tag(tag)
 
     def find_note_index_by_title(self, title):
         index = -1
