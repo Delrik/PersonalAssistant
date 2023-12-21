@@ -61,6 +61,20 @@ def get_all_contacts(book):
     return book.findAll()
 
 
+@handle_error
+def add_note(args, book):
+    if len(args) == 0:
+        raise IndexError("Enter contact name, note title and note text")
+    if len(args) == 1:
+        raise IndexError("Enter note title")
+    if len(args) == 2:
+        raise IndexError("Enter note text")
+    name, title, note = args
+    book.add_note(name, title, note)
+    # TODO: Print
+    return "Note added."
+
+
 def main():
     book = (
         AddressBook.read_from_file()
@@ -88,6 +102,8 @@ def main():
             print(get_contact_phone(args, book))
         elif command == "all":
             print(get_all_contacts(book))
+        elif command == "add-note":
+            print(add_note(args, book))
         else:
             Printer().print_invalid_command()
 
