@@ -1,5 +1,7 @@
 from models.address_book import AddressBook
 from models.printer import Printer
+from utils.completer import get_command_completer
+from prompt_toolkit import PromptSession
 
 
 def handle_error(func):
@@ -70,8 +72,9 @@ def main():
 
     Printer().welcome()
 
+    session = PromptSession(completer=get_command_completer())
     while True:
-        user_input = input("Enter a command: ")
+        user_input = session.prompt("Enter a command: ")
         command, *args = parse_input(user_input)
 
         if command in ["close", "exit"]:
