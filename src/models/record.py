@@ -17,7 +17,7 @@ class Record:
         self.address = Address(address)
 
     def add_note(self, title, text):
-        note_index = self.findNoteIndexByTitle(title)
+        note_index = self.check_note_availability(title)
         if note_index > -1:
             raise KeyError(f"The note with this title '{title}' already exists.")
         self.notes.append(Note(title, text))
@@ -34,6 +34,10 @@ class Record:
         note_index = self.check_note_availability(title)
         self.notes[note_index].title = new_title
 
+    def find_note(self, title):
+        note_index = self.check_note_availability(title)
+        return self.notes[note_index]
+
     def check_note_availability(self, title):
         note_index = self.find_note_index_by_title(title)
         if note_index == -1:
@@ -43,7 +47,7 @@ class Record:
     def find_note_index_by_title(self, title):
         index = -1
         for i, note in enumerate(self.notes):
-            if note.title == title:
+            if note.title.lower() == title.lower():
                 index = i
                 break
         return index

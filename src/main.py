@@ -117,6 +117,16 @@ def change_note_title(args, book):
     return "Note title changed."
 
 
+@handle_error
+def find_note(args, book):
+    if len(args) == 0:
+        raise IndexError("Enter contact name and note title")
+    if len(args) == 1:
+        raise IndexError("Enter note title")
+    name, title = args
+    return book.find_note(name, title)
+
+
 def main():
     book = (
         AddressBook.read_from_file()
@@ -152,6 +162,8 @@ def main():
             print(change_note(args, book))
         elif command == "change-note-title":
             print(change_note_title(args, book))
+        elif command == "find-note":
+            print(find_note(args, book))
         else:
             Printer().print_invalid_command()
 
