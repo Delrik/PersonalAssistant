@@ -44,6 +44,14 @@ def add_phone(args, book):
     book.find(name).add_phone(phone)
     Printer().print_phone_added()
 
+@handle_error
+def change_phone(args, book):
+    if len(args) != 3:
+        raise IndexError("Enter name, old phone number, new phone number")
+    name, old_phone, new_phone = args
+    book.find(name).change_phone(old_phone, new_phone)
+    Printer().print_phone_changed()
+
 
 @handle_error
 def get_contact_phone(args, book):
@@ -83,6 +91,8 @@ def main():
             add_contact(args, book)
         elif command == "add-phone":
             print(add_phone(args, book))
+        elif command == "change-phone":
+            print(change_phone(args, book))
         elif command == "phone":
             print(get_contact_phone(args, book))
         elif command == "all":
