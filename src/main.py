@@ -1,6 +1,6 @@
 from models.address_book import AddressBook
 from models.printer import Printer
-from utils.completer import get_command_completer
+from models.completer import CommandCompleter
 from prompt_toolkit import PromptSession
 
 
@@ -72,7 +72,7 @@ def main():
 
     Printer().welcome()
 
-    session = PromptSession(completer=get_command_completer())
+    session = PromptSession(completer=CommandCompleter())
     while True:
         user_input = session.prompt("Enter a command: ")
         command, *args = parse_input(user_input)
