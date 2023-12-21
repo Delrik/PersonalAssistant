@@ -57,8 +57,7 @@ def get_contact_phone(args, book):
 
 @handle_error
 def get_all_contacts(book):
-    # TODO: Print
-    return book.findAll()
+    Printer().print_all_contacts(book)
 
 
 def main():
