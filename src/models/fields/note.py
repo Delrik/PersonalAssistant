@@ -5,12 +5,12 @@ class Note:
         self.tags = []
 
     def add_tag(self, tag):
-        if tag in self.tags:
+        if tag.lower() in self.tags:
             raise KeyError(f"This tag '{tag}' already exists.")
-        self.tags.append(tag)
+        self.tags.append(tag.lower())
 
     def remove_tag(self, tag):
-        self.tags = list(filter(lambda x: x != tag, self.tags))
+        self.tags = list(filter(lambda x: x != tag.lower(), self.tags))
 
     def __str__(self):
         return f"Note: {self.title}, text: {self.text}, tags: {", ".join(self.tags)}"
