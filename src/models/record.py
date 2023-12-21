@@ -51,7 +51,7 @@ class Record:
 
     def is_note_exist(self, title):
         note_index = self.find_note_index_by_title(title)
-        return True if note_index > -1 else False
+        return note_index > -1
 
     def set_email(self, email):
         self.email = Email(email)
