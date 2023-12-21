@@ -1,7 +1,7 @@
 class Note:
-    def __init__(self, title, note):
+    def __init__(self, title, text):
         self.title = title
-        self.note = note
+        self.text = text
         self.tags = []
 
     def add_tag(self, tag):
@@ -11,4 +11,4 @@ class Note:
         self.tags = list(filter(lambda x: x != tag, self.tags))
 
     def __str__(self):
-        return f"Note: {self.title}, note: {self.note}, tags: {", ".join(self.tags)}"
+        return f"Note: {self.title}, text: {self.text}, tags: {", ".join(self.tags)}"

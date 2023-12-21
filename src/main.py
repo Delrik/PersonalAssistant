@@ -12,6 +12,8 @@ def handle_error(func):
             return e
         except IndexError as e:
             return e
+        except TypeError as e:
+            return e
 
     return inner
 
@@ -69,10 +71,20 @@ def add_note(args, book):
         raise IndexError("Enter note title")
     if len(args) == 2:
         raise IndexError("Enter note text")
-    name, title, note = args
-    book.add_note(name, title, note)
+    name, title, text = args
+    book.add_note(name, title, text)
     # TODO: Print
     return "Note added."
+
+
+@handle_error
+def remove_note(args, book):
+    if len(args) == 0:
+        raise IndexError("Enter contact name")
+    name = args[0]
+    book.remove_note(name)
+    # TODO: Print
+    return "Note removed."
 
 
 def main():
@@ -104,6 +116,8 @@ def main():
             print(get_all_contacts(book))
         elif command == "add-note":
             print(add_note(args, book))
+        elif command == "remove-note":
+            print(remove_note(args, book))
         else:
             Printer().print_invalid_command()
 

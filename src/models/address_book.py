@@ -15,9 +15,13 @@ class AddressBook(UserDict):
         record = self.find(name)
         record.set_address(address)
 
-    def add_note(self, name, title, note):
+    def add_note(self, name, title, text):
         record = self.find(name)
-        record.add_note(title, note)
+        record.add_note(title, text)
+
+    def remove_note(self, name):
+        record = self.find(name)
+        record.remove_note()
 
     def find(self, name) -> Record:
         if not name in self.data:
