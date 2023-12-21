@@ -20,14 +20,6 @@ class AddressBook(UserDict):
             raise KeyError(f"The contact with this name '{name}' does not exist.")
         return self.data[name]
 
-    def findAll(self):
-        if len(self.data) == 0:
-            raise KeyError(f"The contact list is empty.")
-        return [
-            f"{name}: {self.data[name].phone}, note: {self.data[name].notes}"
-            for name in self.data.keys()
-        ]
-
     def findNotesByTag(self, tag):
         result = []
 
