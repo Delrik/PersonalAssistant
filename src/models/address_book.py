@@ -1,8 +1,7 @@
 from collections import UserDict, defaultdict
 import pickle
-from datetime import timedelta, datetime
-
 from .record import Record
+from datetime import timedelta, datetime
 
 
 class AddressBook(UserDict):
