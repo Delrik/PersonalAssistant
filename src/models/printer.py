@@ -35,3 +35,6 @@ class Printer(metaclass=SingletonMeta):
 
     def print_address_changed(self):
         print("Address changed.")
+
+    def print_address_removed(self):
+        print("Address removed.")

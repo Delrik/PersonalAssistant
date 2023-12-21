@@ -89,6 +89,14 @@ def change_address(args, book):
     Printer().print_address_changed()
 
 @handle_error
+def remove_address(args, book):
+    if len(args) != 1:
+        raise IndexError("Enter name")
+    name = args[0]
+    book.find(name).remove_address()
+    Printer().print_address_removed()
+
+@handle_error
 def get_all_contacts(book):
     # TODO: Print
     return book.findAll()
@@ -127,6 +135,8 @@ def main():
             print(add_address(args, book))
         elif command == "change-address":
             print(change_address(args, book))
+        elif command == "remove-address":
+            print(remove_address(args, book))
         elif command == "all":
             print(get_all_contacts(book))
         else:

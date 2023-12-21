@@ -34,5 +34,8 @@ class Record:
     def add_address(self, address):
         self.address = Address(address)
 
+    def remove_address(self):
+        self.address = None
+
     def __str__(self):
         return f"Contact name: {self.name}, phones: {self.phones}"
