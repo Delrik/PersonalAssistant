@@ -15,6 +15,11 @@ class Record:
                 f"The phone number '{phone}' already exists.")
         self.phones.append(phone)
 
+    def change_phone(self, old_phone, new_phone):
+        for i, p in enumerate(self.phones):
+            if str(self.phones[i]) == old_phone:
+                self.phones[i] = Phone(new_phone)
+
     def set_address(self, address):
         self.address = Address(address)
 

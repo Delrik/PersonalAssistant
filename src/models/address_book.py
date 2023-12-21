@@ -25,8 +25,7 @@ class AddressBook(UserDict):
     def findAll(self):
         if len(self.data) == 0:
             raise KeyError(f"The contact list is empty.")
-        # TODO Check return value, "phone" is changed to "phones"
-        return [f"{name}: {self.data[name].phones}" for name in self.data.keys()]
+        return [f"{name}: {'; '.join(p.value for p in self.data[name].phones)}" for name in self.data.keys()]
     
 
     def save_to_file(self):
