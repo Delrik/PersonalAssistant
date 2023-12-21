@@ -21,6 +21,12 @@ class Printer(metaclass=SingletonMeta):
     def print_invalid_command(self):
         print("Invalid command.")
 
+    def print_is_already_exist(self, value):
+        print(f"The '{value}' is already exists.")
+
+    def print_is_not_exist(self, value):
+        print(f"The '{value}' is not exists.")
+
     def print_all_contacts(self, book):
         for record in book.data.values():
             print(record)
