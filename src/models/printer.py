@@ -27,5 +27,9 @@ class Printer(metaclass=SingletonMeta):
     def print_is_not_exist(self, value):
         print(f"The '{value}' is not exists.")
 
+    def print_all_contacts(self, book):
+        for record in book.data.values():
+            print(record)
+
     def print_error(self, error):
         print(error)
