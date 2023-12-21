@@ -11,4 +11,4 @@ class Note:
         return tag.lower() in self.tags
 
     def __str__(self):
-        return f"Note: {self.title}, text: {self.text}, tags: {", ".join(self.tags)}"
+        return f"Note: {self.title}, text: {self.text}, tags: {', '.join(self.tags)}"
