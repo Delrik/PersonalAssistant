@@ -96,7 +96,7 @@ def get_all_contacts(book):
 def add_note(args, book):
     name = get_name(args)
     record = book.find(name)
-    title = get_input_value("title", record.is_exist, type_check="exist")
+    title = get_input_value("title", record.is_note_exist, type_check="exist")
     if title != None:
         text = get_input_value("text")
         if text != None:
