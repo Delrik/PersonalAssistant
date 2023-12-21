@@ -1,4 +1,5 @@
 from models.address_book import AddressBook
+from models.printer import Printer
 
 
 def handle_error(func):
@@ -29,6 +30,7 @@ def add_contact(args, book):
         raise IndexError("Enter phone number")
     name, phone = args
     book.add_record(name, phone)
+    # TODO: Print
     return "Contact added."
 
 
@@ -40,6 +42,7 @@ def change_contact(args, book):
         raise IndexError("Enter phone number")
     name, phone = args
     book.find(name).add_phone(phone)
+    # TODO: Print
     return "Contact changed."
 
 
@@ -48,11 +51,13 @@ def get_contact_phone(args, book):
     if len(args) == 0:
         raise IndexError("Enter name")
     name = args[0]
+    # TODO: Print
     return book.find(name).phone
 
 
 @handle_error
 def get_all_contacts(book):
+    # TODO: Print
     return book.findAll()
 
 
@@ -63,7 +68,7 @@ def main():
         else AddressBook()
     )
 
-    print("Welcome to the assistant bot!")
+    Printer().welcome()
 
     while True:
         user_input = input("Enter a command: ")
@@ -71,12 +76,12 @@ def main():
 
         if command in ["close", "exit"]:
             book.save_to_file()
-            print("Good bye!")
+            Printer().print_exit()
             break
         elif command == "hello":
-            print("How can I help you?")
+            Printer().print_hello()
         elif command == "add":
-            print(add_contact(args, book))
+            add_contact(args, book)
         elif command == "change":
             print(change_contact(args, book))
         elif command == "phone":
@@ -84,7 +89,7 @@ def main():
         elif command == "all":
             print(get_all_contacts(book))
         else:
-            print("Invalid command.")
+            Printer().print_invalid_command()
 
 
 if __name__ == "__main__":
