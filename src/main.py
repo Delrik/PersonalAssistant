@@ -58,6 +58,7 @@ def get_all_contacts(book):
 
 
 @handle_error
+<<<<<<< HEAD
 def add_birthday(args, book):
     if len(args) < 2:
         raise IndexError("Enter name and birthday")
@@ -72,11 +73,28 @@ def add_birthday(args, book):
 
 @handle_error
 def remove_birthday(args, book):
+=======
+def add_email(args, book):
+    if len(args) < 2:
+        raise IndexError("Enter name and email")
+
+    name, email = args
+    contact = book.find(name)
+    contact.set_email(email)
+
+    # TODO: Print
+    return f"Email added for {name}."
+
+
+@handle_error
+def remove_email(args, book):
+>>>>>>> 85214a978bb222241fefc426131b7e88929f9801
     if len(args) == 0:
         raise IndexError("Enter name")
 
     name = args[0]
     contact = book.find(name)
+<<<<<<< HEAD
     contact.remove_birthday()
 
     # TODO: Print
@@ -94,6 +112,25 @@ def change_birthday(args, book):
 
     # TODO: Print
     return f"Birthday changed for {name}."
+=======
+    contact.remove_email()
+
+    # TODO: Print
+    return f"Email removed for {name}."
+
+
+@handle_error
+def change_email(args, book):
+    if len(args) < 2:
+        raise IndexError("Enter name and new email")
+
+    name, new_email = args
+    contact = book.find(name)
+    contact.set_email(new_email)
+
+    # TODO: Print
+    return f"Email changed for {name}."
+>>>>>>> 85214a978bb222241fefc426131b7e88929f9801
 
 
 def main():
@@ -123,12 +160,21 @@ def main():
             print(get_contact_phone(args, book))
         elif command == "all":
             print(get_all_contacts(book))
+<<<<<<< HEAD
         elif command == "add-birthday":
             print(add_birthday(args, book))
         elif command == "remove-birthday":
             print(remove_birthday(args, book))
         elif command == "change-birthday":
             print(change_birthday(args, book))
+=======
+        elif command == "add-email":
+            print(add_email(args, book))
+        elif command == "remove-email":
+            print(remove_email(args, book))
+        elif command == "change-email":
+            print(change_email(args, book))
+>>>>>>> 85214a978bb222241fefc426131b7e88929f9801
         else:
             Printer().print_invalid_command()
 
