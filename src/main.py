@@ -68,7 +68,7 @@ def add_email(args, book):
 
     name, email = args
     contact = book.find(name)
-    contact.add_email(email)
+    contact.set_email(email)
 
     # TODO: Print
     return f"Email added for {name}."
@@ -94,7 +94,7 @@ def change_email(args, book):
 
     name, new_email = args
     contact = book.find(name)
-    contact.change_email(new_email)
+    contact.set_email(new_email)
 
     # TODO: Print
     return f"Email changed for {name}."

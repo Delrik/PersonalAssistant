@@ -16,14 +16,11 @@ class Record:
     def set_address(self, address):
         self.address = Address(address)
 
-    def add_email(self, email):
+    def set_email(self, email):
         self.email = Email(email)
 
     def remove_email(self):
         self.email = None
-
-    def change_email(self, new_email):
-        self.add_email(new_email)
 
     def __str__(self):
         return f"Contact name: {self.name}, phone: {self.phone}, email: {self.email}"
