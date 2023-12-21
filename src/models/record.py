@@ -24,7 +24,9 @@ class Record:
 
     def remove_note(self, title):
         self.check_note_availability(title)
-        self.notes = list(filter(lambda note: note.title != title, self.notes))
+        self.notes = list(
+            filter(lambda note: note.title.lower() != title.lower(), self.notes)
+        )
 
     def change_note(self, title, new_text):
         note_index = self.check_note_availability(title)
@@ -55,6 +57,10 @@ class Record:
                 index = i
                 break
         return index
+
+    def is_exist(self, title):
+        note_index = self.find_note_index_by_title(title)
+        return True if note_index > -1 else False
 
     def __str__(self):
         return f"Contact name: {self.name}, phone: {self.phone}, notes: {self.notes}"

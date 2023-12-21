@@ -18,10 +18,39 @@ def handle_error(func):
     return inner
 
 
-def parse_input(user_input):
+@handle_error
+def parse_input(user_input, lower=False):
     cmd, *args = user_input.split()
-    cmd = cmd.strip().lower()
+    cmd = cmd.strip()
+    if lower:
+        cmd = cmd.lower()
     return cmd, *args
+
+
+def get_input_value(name, check_is_exist=None, type_check="not_exist"):
+    while True:
+        input_value = parse_input(input(f"Enter {name} (n-close): "))
+        if type(input_value) == tuple:
+            value = " ".join(input_value)
+            if value == "n":
+                break
+            if check_is_exist:
+                check_result = check_is_exist and check_is_exist(value)
+                if type_check == "exist" and check_result:
+                    Printer().print_is_already_exist(value)
+                elif type_check == "not_exist" and not check_result:
+                    Printer().print_is_not_exist(value)
+                else:
+                    return value
+            else:
+                return value
+
+
+def get_name(args):
+    name = " ".join(args)
+    if len(name) == 0:
+        raise IndexError("Enter contact name")
+    return name
 
 
 @handle_error
@@ -65,66 +94,62 @@ def get_all_contacts(book):
 
 @handle_error
 def add_note(args, book):
-    if len(args) == 0:
-        raise IndexError("Enter contact name, note title and note text")
-    if len(args) == 1:
-        raise IndexError("Enter note title")
-    if len(args) == 2:
-        raise IndexError("Enter note text")
-    name, title, text = args
-    book.find(name).add_note(title, text)
-    # TODO: Print
-    return "Note added."
+    name = get_name(args)
+    record = book.find(name)
+    title = get_input_value("title", record.is_exist, type_check="exist")
+    if title != None:
+        text = get_input_value("text")
+        if text != None:
+            record.add_note(title, text)
+            return "Note added."
+    return "Note creation is canceled."
 
 
 @handle_error
 def remove_note(args, book):
-    if len(args) == 0:
-        raise IndexError("Enter contact name and note title")
-    if len(args) == 1:
-        raise IndexError("Enter note title")
-    name, title = args
-    book.find(name).remove_note(title)
-    # TODO: Print
-    return "Note removed."
+    name = get_name(args)
+    record = book.find(name)
+    title = get_input_value("title", record.is_exist)
+    if title != None:
+        record.remove_note(title)
+        return "Note removed."
+    return "Note removing is canceled."
 
 
 @handle_error
 def change_note(args, book):
-    if len(args) == 0:
-        raise IndexError("Enter contact name, note title, new note text")
-    if len(args) == 1:
-        raise IndexError("Enter note title and new note text")
-    if len(args) == 2:
-        raise IndexError("Enter new note text")
-    name, title, new_text = args
-    book.find(name).change_note(title, new_text)
-    # TODO: Print
-    return "Note changed."
+    name = get_name(args)
+    record = book.find(name)
+    title = get_input_value("title", record.is_exist)
+    if title != None:
+        text = get_input_value("text")
+        if text != None:
+            record.change_note(title, text)
+            return "Note changed."
+    return "Note changing is canceled."
 
 
 @handle_error
 def change_note_title(args, book):
-    if len(args) == 0:
-        raise IndexError("Enter contact name, note title, new note title")
-    if len(args) == 1:
-        raise IndexError("Enter note title and new note title")
-    if len(args) == 2:
-        raise IndexError("Enter new note title")
-    name, title, new_title = args
-    book.find(name).change_note_title(title, new_title)
-    # TODO: Print
-    return "Note title changed."
+    name = get_name(args)
+    record = book.find(name)
+    old_title = get_input_value("old title", record.is_exist)
+    if old_title != None:
+        new_title = get_input_value("new title")
+        if new_title != None:
+            record.change_note_title(old_title, new_title)
+            return "Note title changed."
+    return "Note title changing is canceled."
 
 
 @handle_error
 def find_note(args, book):
-    if len(args) == 0:
-        raise IndexError("Enter contact name and note title")
-    if len(args) == 1:
-        raise IndexError("Enter note title")
-    name, title = args
-    return book.find(name).find_note(title)
+    name = get_name(args)
+    record = book.find(name)
+    title = get_input_value("title", record.is_exist)
+    if title != None:
+        return record.find_note(title)
+    return "Note searching is canceled."
 
 
 @handle_error
@@ -159,7 +184,7 @@ def main():
 
     while True:
         user_input = input("Enter a command: ")
-        command, *args = parse_input(user_input)
+        command, *args = parse_input(user_input, lower=True)
 
         if command in ["close", "exit"]:
             book.save_to_file()
