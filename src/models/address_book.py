@@ -19,9 +19,9 @@ class AddressBook(UserDict):
         record = self.find(name)
         record.add_note(title, text)
 
-    def remove_note(self, name):
+    def remove_note(self, name, title):
         record = self.find(name)
-        record.remove_note()
+        record.remove_note(title)
 
     def find(self, name) -> Record:
         if not name in self.data:
@@ -32,7 +32,7 @@ class AddressBook(UserDict):
         if len(self.data) == 0:
             raise KeyError(f"The contact list is empty.")
         return [
-            f"{name}: {self.data[name].phone}, note: {self.data[name].note}"
+            f"{name}: {self.data[name].phone}, note: {self.data[name].notes}"
             for name in self.data.keys()
         ]
 

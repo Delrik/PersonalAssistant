@@ -80,9 +80,11 @@ def add_note(args, book):
 @handle_error
 def remove_note(args, book):
     if len(args) == 0:
-        raise IndexError("Enter contact name")
-    name = args[0]
-    book.remove_note(name)
+        raise IndexError("Enter contact name and note title")
+    if len(args) == 1:
+        raise IndexError("Enter note title")
+    name, title = args
+    book.remove_note(name, title)
     # TODO: Print
     return "Note removed."
 
