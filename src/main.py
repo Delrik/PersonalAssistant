@@ -107,7 +107,7 @@ def add_birthday(args, book):
     contact.set_birthday(birthday)
 
     # TODO: Print
-    return f"Birthday added for {namse}."
+    return f"Birthday added for {name}."
 
 
 @handle_error
