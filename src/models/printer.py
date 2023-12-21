@@ -20,3 +20,6 @@ class Printer(metaclass=SingletonMeta):
 
     def print_invalid_command(self):
         print("Invalid command.")
+
+    def print_error(self, error):
+        print(error)
