@@ -61,6 +61,45 @@ def get_all_contacts(book):
     return book.findAll()
 
 
+@handle_error
+def add_birthday(args, book):
+    if len(args) < 2:
+        raise IndexError("Enter name and birthday")
+
+    name, birthday = args
+    contact = book.find(name)
+    contact.add_birthday(birthday)
+
+    # TODO: Print
+    return f"Birthday added for {name}."
+
+
+@handle_error
+def remove_birthday(args, book):
+    if len(args) == 0:
+        raise IndexError("Enter name")
+
+    name = args[0]
+    contact = book.find(name)
+    contact.remove_birthday()
+
+    # TODO: Print
+    return f"Birthday removed for {name}."
+
+
+@handle_error
+def change_birthday(args, book):
+    if len(args) < 2:
+        raise IndexError("Enter name and new birthday")
+
+    name, new_birthday = args
+    contact = book.find(name)
+    contact.change_birthday(new_birthday)
+
+    # TODO: Print
+    return f"Birthday changed for {name}."
+
+
 def main():
     book = (
         AddressBook.read_from_file()
@@ -88,6 +127,12 @@ def main():
             print(get_contact_phone(args, book))
         elif command == "all":
             print(get_all_contacts(book))
+        elif command == "add-birthday":
+            print(add_birthday(args, book))
+        elif command == "remove-birthday":
+            print(remove_birthday(args, book))
+        elif command == "change-birthday":
+            print(change_birthday(args, book))
         else:
             Printer().print_invalid_command()
 
