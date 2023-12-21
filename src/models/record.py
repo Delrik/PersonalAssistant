@@ -23,6 +23,8 @@ class Record:
 
     def find_note(self, title):
         note_index = self.find_note_index_by_title(title)
+        if note_index == -1:
+            raise KeyError(f"The note with this title '{title}' does not exist.")
         return self.notes[note_index]
 
     def remove_note(self, title):
