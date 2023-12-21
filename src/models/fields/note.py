@@ -8,7 +8,7 @@ class Note:
         self.tags.append(tag.lower())
 
     def is_exist(self, tag):
-        return True if tag.lower() in self.tags else False
+        return tag.lower() in self.tags
 
     def __str__(self):
         return f"Note: {self.title}, text: {self.text}, tags: {", ".join(self.tags)}"
