@@ -177,6 +177,8 @@ def main():
             print(remove_birthday(args, book))
         elif command == "change-birthday":
             print(change_birthday(args, book))
+        elif command == "birthdays":
+            print()
         else:
             Printer().print_invalid_command()
 
