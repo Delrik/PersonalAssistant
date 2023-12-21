@@ -61,6 +61,45 @@ def get_all_contacts(book):
     return book.findAll()
 
 
+@handle_error
+def add_email(args, book):
+    if len(args) < 2:
+        raise IndexError("Enter name and email")
+
+    name, email = args
+    contact = book.find(name)
+    contact.add_email(email)
+
+    # TODO: Print
+    return f"Email added for {name}."
+
+
+@handle_error
+def remove_email(args, book):
+    if len(args) == 0:
+        raise IndexError("Enter name")
+
+    name = args[0]
+    contact = book.find(name)
+    contact.remove_email()
+
+    # TODO: Print
+    return f"Email removed for {name}."
+
+
+@handle_error
+def change_email(args, book):
+    if len(args) < 2:
+        raise IndexError("Enter name and new email")
+
+    name, new_email = args
+    contact = book.find(name)
+    contact.change_email(new_email)
+
+    # TODO: Print
+    return f"Email changed for {name}."
+
+
 def main():
     book = (
         AddressBook.read_from_file()
@@ -88,6 +127,12 @@ def main():
             print(get_contact_phone(args, book))
         elif command == "all":
             print(get_all_contacts(book))
+        elif command == "add-email":
+            print(add_email(args, book))
+        elif command == "remove-email":
+            print(remove_email(args, book))
+        elif command == "change-email":
+            print(change_email(args, book))
         else:
             Printer().print_invalid_command()
 
