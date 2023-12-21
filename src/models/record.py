@@ -19,26 +19,23 @@ class Record:
     def add_note(self, title, text):
         self.notes.append(Note(title, text))
 
+    def find_note(self, title):
+        note_index = self.find_note_index_by_title(title)
+        return self.notes[note_index]
+
     def remove_note(self, title):
         self.notes = list(
             filter(lambda note: note.title.lower() != title.lower(), self.notes)
         )
 
     def change_note(self, title, new_text):
-        note_index = self.find_note_index_by_title(title)
-        self.notes[note_index].text = new_text
+        self.find_note(title).text = new_text
 
     def change_note_title(self, title, new_title):
-        note_index = self.find_note_index_by_title(title)
-        self.notes[note_index].title = new_title
-
-    def find_note(self, title):
-        note_index = self.find_note_index_by_title(title)
-        return self.notes[note_index]
+        self.find_note(title).title = new_title
 
     def add_tag(self, title, tag):
-        note_index = self.find_note_index_by_title(title)
-        self.notes[note_index].add_tag(tag)
+        self.find_note(title).add_tag(tag)
 
     def find_note_index_by_title(self, title):
         index = -1
