@@ -10,7 +10,7 @@ class Record:
 
     def add_phone(self, phone):
         phone = Phone(phone)
-        if phone in self.phones:
+        if str(phone) in [str(p) for p in self.phones]:
             raise KeyError(
                 f"The phone number '{phone}' already exists.")
         self.phones.append(phone)
