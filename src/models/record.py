@@ -58,7 +58,7 @@ class Record:
                 break
         return index
 
-    def is_exist(self, title):
+    def is_note_exist(self, title):
         note_index = self.find_note_index_by_title(title)
         return True if note_index > -1 else False
 

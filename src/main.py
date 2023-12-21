@@ -109,7 +109,7 @@ def add_note(args, book):
 def remove_note(args, book):
     name = get_name(args)
     record = book.find(name)
-    title = get_input_value("title", record.is_exist)
+    title = get_input_value("title", record.is_note_exist)
     if title != None:
         record.remove_note(title)
         return "Note removed."
@@ -120,7 +120,7 @@ def remove_note(args, book):
 def change_note(args, book):
     name = get_name(args)
     record = book.find(name)
-    title = get_input_value("title", record.is_exist)
+    title = get_input_value("title", record.is_note_exist)
     if title != None:
         text = get_input_value("text")
         if text != None:
@@ -133,7 +133,7 @@ def change_note(args, book):
 def change_note_title(args, book):
     name = get_name(args)
     record = book.find(name)
-    old_title = get_input_value("old title", record.is_exist)
+    old_title = get_input_value("old title", record.is_note_exist)
     if old_title != None:
         new_title = get_input_value("new title")
         if new_title != None:
@@ -146,7 +146,7 @@ def change_note_title(args, book):
 def find_note(args, book):
     name = get_name(args)
     record = book.find(name)
-    title = get_input_value("title", record.is_exist)
+    title = get_input_value("title", record.is_note_exist)
     if title != None:
         return record.find_note(title)
     return "Note searching is canceled."
@@ -154,15 +154,16 @@ def find_note(args, book):
 
 @handle_error
 def add_tag(args, book):
-    if len(args) == 0:
-        raise IndexError("Enter contact name, note title and tag name")
-    if len(args) == 1:
-        raise IndexError("Enter note title and tag name")
-    if len(args) == 2:
-        raise IndexError("Enter tag name")
-    name, title, tag = args
-    book.find(name).add_tag(title, tag)
-    return "Tag added."
+    name = get_name(args)
+    record = book.find(name)
+    title = get_input_value("title", record.is_note_exist)
+    if title != None:
+        note = record.find_note(title)
+        tag = get_input_value("tag", note.is_exist, type_check="exist")
+        if tag != None:
+            record.add_tag(title, tag)
+            return "Tag added."
+    return "Tag adding is canceled."
 
 
 @handle_error
