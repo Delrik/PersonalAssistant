@@ -140,6 +140,14 @@ def add_tag(args, book):
     return "Tag added."
 
 
+@handle_error
+def find_tag(args, book):
+    if len(args) == 0:
+        raise IndexError("Enter tag name")
+    tag = args[0]
+    return book.findNotesByTag(tag)
+
+
 def main():
     book = (
         AddressBook.read_from_file()
@@ -179,6 +187,8 @@ def main():
             print(find_note(args, book))
         elif command == "add-tag":
             print(add_tag(args, book))
+        elif command == "find-tag":
+            print(find_tag(args, book))
         else:
             Printer().print_invalid_command()
 

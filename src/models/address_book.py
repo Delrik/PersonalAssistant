@@ -28,6 +28,19 @@ class AddressBook(UserDict):
             for name in self.data.keys()
         ]
 
+    def findNotesByTag(self, tag):
+        result = []
+
+        for name in self.data:
+            for note in self.data[name].notes:
+                if tag.lower() in note.tags:
+                    result.append(note)
+
+        if len(result) == 0:
+            raise KeyError(f"No notes found.")
+
+        return result
+
     def save_to_file(self):
         with open("db.bin", "wb") as file:
             pickle.dump(self, file)
