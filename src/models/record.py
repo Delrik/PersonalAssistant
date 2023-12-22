@@ -1,3 +1,4 @@
+from .fields.birthday import Birthday
 from .fields.email import Email
 from .fields.phone import Phone
 from .fields.name import Name
@@ -11,6 +12,7 @@ class Record:
         self.phone = None
         self.notes = []
         self.email = None
+        self.birthday = None
 
     def add_phone(self, phone):
         self.phone = Phone(phone)
@@ -59,5 +61,11 @@ class Record:
     def remove_email(self):
         self.email = None
 
+    def set_birthday(self, birthday):
+        self.birthday = Birthday(birthday)
+
+    def remove_birthday(self):
+        self.birthday = None
+
     def __str__(self):
-        return f"Contact name: {self.name}, phone: {self.phone}, email: {self.email}, notes: {self.notes}"
+        return f"Contact name: {self.name}, phone: {self.phone}, email: {self.email}, birthday: {self.birthday}, notes: {self.notes}"

@@ -1,7 +1,9 @@
+from collections import defaultdict
 from models.address_book import AddressBook
 from models.printer import Printer
 from models.completer import CommandCompleter
 from prompt_toolkit import PromptSession
+from datetime import timedelta, datetime
 
 
 def handle_error(func):
@@ -47,6 +49,10 @@ def get_name(args):
     if len(name) == 0:
         raise IndexError("Enter contact name")
     return name
+
+
+def get_day_of_week_from_date(input_date):
+    return input_date.strftime("%A")
 
 
 @handle_error
@@ -169,6 +175,7 @@ def find_tag(args, book):
     return book.findNotesByTag(tag)
 
 
+@handle_error
 def add_email(args, book):
     if len(args) < 2:
         raise IndexError("Enter name and email")
@@ -205,6 +212,112 @@ def change_email(args, book):
 
     # TODO: Print
     return f"Email changed for {name}."
+
+
+@handle_error
+def add_birthday(args, book):
+    if len(args) < 2:
+        raise IndexError("Enter name and birthday")
+
+    name, birthday = args
+    contact = book.find(name)
+    contact.set_birthday(birthday)
+
+    # TODO: Print
+    return f"Birthday added for {name}."
+
+
+@handle_error
+def remove_birthday(args, book):
+    if len(args) == 0:
+        raise IndexError("Enter name")
+
+    name = args[0]
+    contact = book.find(name)
+    contact.remove_birthday()
+
+    # TODO: Print
+    return f"Birthday removed for {name}."
+
+
+@handle_error
+def change_birthday(args, book):
+    if len(args) < 2:
+        raise IndexError("Enter name and new birthday")
+
+    name, new_birthday = args
+    contact = book.find(name)
+    contact.set_birthday(new_birthday)
+
+    # TODO: Print
+    return f"Birthday changed for {name}."
+
+
+@handle_error
+def get_birthdays_within_future_range(days, book, is_strict_birthday_date=False):
+    today = datetime.now()
+    birthdays = defaultdict(list)
+
+    for record in book.values():
+        if record.birthday:
+            birthday_date = datetime.strptime(record.birthday.value, "%d.%m.%Y")
+            if not is_strict_birthday_date:
+                user_delta = (birthday_date.replace(year=today.year) - today).days + 1
+
+                if 0 <= user_delta <= days:
+                    if get_day_of_week_from_date(birthday_date) == "Saturday":
+                        user_delta += 2
+                    elif get_day_of_week_from_date(birthday_date) == "Sunday":
+                        user_delta += 1
+
+                    next_birthday = get_day_of_week_from_date(
+                        today + timedelta(days=user_delta)
+                    )
+                    birthdays[next_birthday].append(record.name)
+            else:
+                days_until_birthday = (
+                    birthday_date.replace(year=today.year) - today
+                ).days + 1
+                if days_until_birthday < 0:
+                    days_until_birthday = (
+                        birthday_date.replace(year=today.year + 1) - today
+                    ).days + 1
+                if days_until_birthday == int(days):
+                    birthdays[f"Birthday in {days}"].append(record.name)
+
+    return birthdays
+
+
+@handle_error
+def get_birthdays_within_next_week(book):
+    days_in_week = 7
+    birthdays_within_week = get_birthdays_within_future_range(days_in_week, book, False)
+    if birthdays_within_week:
+        birthdays_string = ""
+        for day, names in birthdays_within_week.items():
+            birthdays_string += f"{day}: {', '.join(str(name) for name in names)}\n"
+        return birthdays_string
+    else:
+        return "No upcoming birthdays within next week."
+
+
+@handle_error
+def birthdays(args, book):
+    if len(args) < 1:
+        return get_birthdays_within_next_week(book)
+    elif len(args) == 1:
+        birthdays = get_birthdays_within_future_range(args[0], book, True)
+        if birthdays:
+            birthdays_string = ""
+            for day, names in birthdays.items():
+                birthdays_string += f"{day}: {', '.join(str(name) for name in names)}\n"
+            return birthdays_string
+        else:
+            return f"No one has a birthday {args[0]} days from today."
+    else:
+        raise IndexError(
+            "Enter no arguments to get birthdays within next week or enter specific number to see who has birthday then"
+        )
 
 
 def main():
@@ -255,6 +368,14 @@ def main():
             print(remove_email(args, book))
         elif command == "change-email":
             print(change_email(args, book))
+        elif command == "add-birthday":
+            print(add_birthday(args, book))
+        elif command == "remove-birthday":
+            print(remove_birthday(args, book))
+        elif command == "change-birthday":
+            print(change_birthday(args, book))
+        elif command == "birthdays":
+            print(birthdays(args, book))
         else:
             Printer().print_invalid_command()
 
