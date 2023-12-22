@@ -29,12 +29,6 @@ class AddressBook(UserDict):
             raise KeyError(f"No notes found.")
 
         return result
-    
-    def findAll(self):
-        if len(self.data) == 0:
-            raise KeyError(f"The contact list is empty.")
-        return [f"{name}: {'; '.join(p.value for p in self.data[name].phones)}" for name in self.data.keys()]
-    
 
     def save_to_file(self):
         with open("db.bin", "wb") as file:
