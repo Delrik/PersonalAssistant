@@ -37,7 +37,7 @@ class Record:
             raise KeyError(
                     f"{phone} not found, add correct number please.")
 
-    def add_address(self, address):
+    def set_address(self, address):
         self.address = Address(address)
 
     def remove_address(self):
