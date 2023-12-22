@@ -4,12 +4,11 @@ from .record import Record
 
 
 class AddressBook(UserDict):
-    def add_record(self, name, phone):
+    def add_record(self, name):
         if name in self.data:
             raise KeyError(
                 f"The contact with this name '{name}' already exists.")
         record = Record(name)
-        record.add_phone(phone)
         self.data[name] = record
 
     def find(self, name) -> Record:
@@ -18,6 +17,19 @@ class AddressBook(UserDict):
                 f"The contact with this name '{name}' does not exist.")
         return self.data[name]
 
+    def findNotesByTag(self, tag):
+        result = []
+
+        for name in self.data:
+            for note in self.data[name].notes:
+                if tag.lower() in note.tags:
+                    result.append((name, note))
+
+        if len(result) == 0:
+            raise KeyError(f"No notes found.")
+
+        return result
+    
     def findAll(self):
         if len(self.data) == 0:
             raise KeyError(f"The contact list is empty.")
