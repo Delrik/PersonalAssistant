@@ -4,11 +4,11 @@ from .record import Record
 
 
 class AddressBook(UserDict):
-    def add_record(self, name, phone):
+    def add_record(self, name):
         if name in self.data:
-            raise KeyError(f"The contact with this name '{name}' already exists.")
+            raise KeyError(
+                f"The contact with this name '{name}' already exists.")
         record = Record(name)
-        record.add_phone(phone)
         self.data[name] = record
 
     def set_address(self, name, address):
@@ -17,7 +17,8 @@ class AddressBook(UserDict):
 
     def find(self, name) -> Record:
         if not name in self.data:
-            raise KeyError(f"The contact with this name '{name}' does not exist.")
+            raise KeyError(
+                f"The contact with this name '{name}' does not exist.")
         return self.data[name]
 
     def findNotesByTag(self, tag):
@@ -26,7 +27,7 @@ class AddressBook(UserDict):
         for name in self.data:
             for note in self.data[name].notes:
                 if tag.lower() in note.tags:
-                    result.append(note)
+                    result.append((name, note))
 
         if len(result) == 0:
             raise KeyError(f"No notes found.")

@@ -16,8 +16,23 @@ class CommandCompleter(Completer):
             "hello",
             "add",
             "change",
+            "delete",
             "phone",
             "all",
+            "add-note",
+            "remove-note",
+            "change-note",
+            "change-note-title",
+            "find-note",
+            "add-tag",
+            "find-tag",
+            "add-email",
+            "remove-email",
+            "change-email",
+            "add-birthday",
+            "change-birthday",
+            "remove-birthday",
+            "birthdays",
         ]  # TODO add all commands
 
         for command in commands:
