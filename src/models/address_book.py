@@ -7,17 +7,17 @@ class AddressBook(UserDict):
     def add_record(self, name):
         if name in self.data:
             raise KeyError(
-                f"The contact with this name '{name}' already exists.")
+                f"Contact with this name '{name}' already exists.")
         record = Record(name)
         self.data[name] = record
 
     def find(self, name) -> Record:
         if not name in self.data:
             raise KeyError(
-                f"The contact with this name '{name}' does not exist.")
+                f"Contact with this name '{name}' does not exist.")
         return self.data[name]
 
-    def findNotesByTag(self, tag):
+    def find_notes_by_tag(self, tag):
         result = []
 
         for name in self.data:

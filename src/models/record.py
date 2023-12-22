@@ -4,6 +4,7 @@ from .fields.phone import Phone
 from .fields.name import Name
 from .fields.address import Address
 from .fields.note import Note
+from rich.text import Text
 
 
 class Record:
@@ -18,8 +19,7 @@ class Record:
     def add_phone(self, phone):
         phone = Phone(phone)
         if str(phone) in [str(p) for p in self.phones]:
-            raise KeyError(
-                f"The phone number {phone} already exists.")
+            raise KeyError(f"Phone number {phone} already exists.")
         self.phones.append(phone)
 
     def change_phone(self, old_phone, new_phone):
@@ -27,15 +27,17 @@ class Record:
             if str(phone.value) == old_phone:
                 self.phones[index] = Phone(new_phone)
                 return
-        raise KeyError(
-                f"{phone} not found, add correct number please.")
+        raise KeyError(f"{old_phone} not found, add correct number please.")
 
     def remove_phone(self, phone):
         if str(phone) in [str(p) for p in self.phones]:
-            self.phones = [existing_phone for existing_phone in self.phones if existing_phone.value != phone]
+            self.phones = [
+                existing_phone
+                for existing_phone in self.phones
+                if existing_phone.value != phone
+            ]
         else:
-            raise KeyError(
-                    f"{phone} not found, add correct number please.")
+            raise KeyError(f"{phone} not found, add correct number please.")
 
     def set_address(self, address):
         self.address = Address(address)
@@ -45,21 +47,18 @@ class Record:
 
     def add_note(self, title, text):
         if self.is_note_exist(title):
-            raise KeyError(
-                f"The note with this title '{title}' already exists.")
+            raise KeyError(f"The note with this title '{title}' already exists.")
         self.notes.append(Note(title, text))
 
     def find_note(self, title):
         note_index = self.find_note_index_by_title(title)
         if note_index == -1:
-            raise KeyError(
-                f"The note with this title '{title}' does not exist.")
+            raise KeyError(f"The note with this title '{title}' does not exist.")
         return self.notes[note_index]
 
     def remove_note(self, title):
         self.notes = list(
-            filter(lambda note: note.title.lower()
-                   != title.lower(), self.notes)
+            filter(lambda note: note.title.lower() != title.lower(), self.notes)
         )
 
     def change_note(self, title, new_text):
@@ -95,5 +94,39 @@ class Record:
     def remove_birthday(self):
         self.birthday = None
 
-    def __str__(self):
-        return f"Contact name: {self.name}, phones: {self.phones}, address: {self.address}, email: {self.email}, birthday: {self.birthday}, notes: {self.notes}"
+    def __rich__(self):
+        formatted_contact = Text()
+        formatted_contact.append("Contact name: ", style="yellow")
+        formatted_contact.append(f"{self.name}\n", style="bold blue")
+
+        if self.phones:
+            phone_list = ", ".join(str(phone) for phone in self.phones)
+            formatted_contact.append("Phones: ", style="yellow")
+            formatted_contact.append(f"{phone_list}\n", style="blue")
+
+        if self.address and self.address.value:
+            formatted_contact.append("Address: ", style="yellow")
+            formatted_contact.append(f"{self.address}\n", style="blue")
+
+        if self.email and self.email.value:
+            formatted_contact.append("Email: ", style="yellow")
+            formatted_contact.append(f"{self.email}\n", style="blue")
+
+        if self.birthday and self.birthday.value:
+            formatted_contact.append("Birthday: ", style="yellow")
+            formatted_contact.append(f"{self.birthday}\n", style="blue")
+
+        if self.notes:
+            notes_text = Text()
+            for note in self.notes:
+                notes_text.append(f"{note.title}: ", style="bold blue")
+                notes_text.append(f"{note.text} ", style="blue")
+                if note.tags:
+                    formatted_tags = ", ".join(note.tags)
+                    notes_text.append(formatted_tags, style="green")
+                notes_text.append("\n")
+
+            formatted_contact.append(f"Notes:\n", style="yellow")
+            formatted_contact.append(notes_text)
+
+        return formatted_contact
