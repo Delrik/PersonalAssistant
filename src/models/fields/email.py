@@ -9,6 +9,12 @@ class Email(Field):
 
     @staticmethod
     def validate_email(email):
+        if not Email.is_valid(email):
+            raise ValueError(f"{email} is not a valid email address.")
+
+    @staticmethod
+    def is_valid(email):
         pattern = re.compile(r"[^@]+@[^@]+\.[^@]+")
         if not re.match(pattern, email):
-            raise ValueError(f"{email} is not a valid email address.")
+            return False
+        return True

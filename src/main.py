@@ -1,7 +1,10 @@
 from collections import defaultdict
 from models.address_book import AddressBook
-from models.printer import Printer
-from models.completer import CommandCompleter
+from models.fields.birthday import Birthday
+from models.fields.email import Email
+from models.fields.phone import Phone
+from utils.printer import Printer
+from utils.completer import CommandCompleter
 from prompt_toolkit import PromptSession
 from datetime import timedelta, datetime
 
@@ -25,25 +28,6 @@ def parse_input(user_input, lower=False):
     return cmd, *args
 
 
-def get_input_value(name, check_is_exist=None, type_check="not_exist"):
-    while True:
-        input_value = parse_input(input(f"Enter {name} (n-close): "))
-        if type(input_value) == tuple:
-            value = " ".join(input_value)
-            if value == "n":
-                break
-            if check_is_exist:
-                check_result = check_is_exist and check_is_exist(value)
-                if type_check == "exist" and check_result:
-                    Printer().print_is_already_exist(value)
-                elif type_check == "not_exist" and not check_result:
-                    Printer().print_is_not_exist(value)
-                else:
-                    return value
-            else:
-                return value
-
-
 def get_name(args):
     name = " ".join(args)
     if len(name) == 0:
@@ -55,37 +39,78 @@ def get_day_of_week_from_date(input_date):
     return input_date.strftime("%A")
 
 
+def is_empty_string(value):
+    return value == ""
+
+
+def get_valid_input(request, validity_func, error_msg):
+    while True:
+        value = input(request)
+        if validity_func(value):
+            return value
+        Printer().print_error(error_msg)
+
+
+def get_any_input(request):
+    return input(request)
+
+
+def get_contact_data(book, name):
+    phone = get_valid_input("Enter phone number(Optional): ", lambda x: Phone.is_valid(
+        x) or is_empty_string(x), "Invalid phone number(10 digits)")
+    if phone:
+        book.find(name).add_phone(phone)
+
+    birthday = get_valid_input("Enter birthday(Optional): ", lambda x: Birthday.is_valid(
+        x) or is_empty_string(x), "Invalid birthday(dd.mm.yyyy)")
+    if birthday:
+        book.find(name).set_birthday(birthday)
+
+    address = get_any_input("Enter address(Optional): ")
+    book.find(name).set_address(address)
+
+    email = get_valid_input("Enter email(Optional): ", lambda x: Email.is_valid(
+        x) or is_empty_string(x), "Invalid email address")
+    if email:
+        book.find(name).set_email(email)
+
+
 @handle_error
-def add_contact(args, book):
+def add_contact(args, book: AddressBook):
     if len(args) == 0:
-        raise IndexError("Enter name and phone number")
-    if len(args) == 1:
-        raise IndexError("Enter phone number")
-    name, phone = args
-    book.add_record(name, phone)
-    # TODO: Print
-    return "Contact added."
+        raise IndexError("Enter name")
+    name = " ".join(args)
+    book.add_record(name)
+    get_contact_data(book, name)
+    Printer().print_contact_added(book.find(name))
 
 
 @handle_error
 def change_contact(args, book):
     if len(args) == 0:
-        raise IndexError("Enter name and phone number")
-    if len(args) == 1:
-        raise IndexError("Enter phone number")
-    name, phone = args
-    book.find(name).add_phone(phone)
-    # TODO: Print
-    return "Contact changed."
+        raise IndexError("Enter name")
+    name = " ".join(args)
+    book.find(name)
+    get_contact_data(book, name)
+    Printer().print_contact_changed(book.find(name))
+
+
+@handle_error
+def delete_contact(args, book):
+    if len(args) == 0:
+        raise IndexError("Enter name")
+    name = " ".join(args)
+    book.find(name)
+    book.data.pop(name)
+    Printer().print_contact_deleted(name)
 
 
 @handle_error
 def get_contact_phone(args, book):
     if len(args) == 0:
         raise IndexError("Enter name")
-    name = args[0]
-    # TODO: Print
-    return book.find(name).phone
+    name = " ".join(args)
+    Printer().print_contact(book.find(name))
 
 
 @handle_error
@@ -94,163 +119,171 @@ def get_all_contacts(book):
 
 
 @handle_error
-def add_note(args, book):
-    name = get_name(args)
+def add_note(args, book: AddressBook):
+    if len(args) == 0:
+        raise IndexError("Enter name")
+    name = " ".join(args)
     record = book.find(name)
-    title = get_input_value("title", record.is_note_exist, type_check="exist")
-    if title != None:
-        text = get_input_value("text")
-        if text != None:
-            record.add_note(title, text)
-            return "Note added."
-    return "Note creation is canceled."
+    title = get_valid_input("Enter note title: ", lambda x: not is_empty_string(
+        x), "Title can't be empty")
+    if record.is_note_exist(title):
+        raise KeyError(
+            f"The note with this title '{title}' already exists.")
+    note = get_valid_input("Enter note: ", lambda x: not is_empty_string(
+        x), "Note can't be empty")
+    record.add_note(title, note)
+    Printer().print_note_added(record)
 
 
 @handle_error
-def remove_note(args, book):
-    name = get_name(args)
+def remove_note(args, book: AddressBook):
+    if len(args) == 0:
+        raise IndexError("Enter name")
+    name = " ".join(args)
     record = book.find(name)
-    title = get_input_value("title", record.is_note_exist)
-    if title != None:
-        record.remove_note(title)
-        return "Note removed."
-    return "Note removing is canceled."
+    title = get_valid_input("Enter note title: ", lambda x: not is_empty_string(
+        x), "Title can't be empty")
+    record.remove_note(title)
+    Printer().print_note_removed(title)
 
 
 @handle_error
-def change_note(args, book):
-    name = get_name(args)
+def change_note(args, book: AddressBook):
+    if len(args) == 0:
+        raise IndexError("Enter name")
+    name = " ".join(args)
     record = book.find(name)
-    title = get_input_value("title", record.is_note_exist)
-    if title != None:
-        text = get_input_value("text")
-        if text != None:
-            record.change_note(title, text)
-            return "Note changed."
-    return "Note changing is canceled."
+    title = get_valid_input("Enter note title: ", lambda x: not is_empty_string(
+        x), "Title can't be empty")
+    if not record.is_note_exist(title):
+        raise KeyError(
+            f"The note with this title '{title}' does not exist.")
+    note = get_valid_input("Enter new note: ", lambda x: not is_empty_string(
+        x), "Note can't be empty")
+    record.change_note(title, note)
+    Printer().print_note_changed(record)
 
 
 @handle_error
-def change_note_title(args, book):
-    name = get_name(args)
+def change_note_title(args, book: AddressBook):
+    if len(args) == 0:
+        raise IndexError("Enter name")
+    name = " ".join(args)
     record = book.find(name)
-    old_title = get_input_value("old title", record.is_note_exist)
-    if old_title != None:
-        new_title = get_input_value("new title")
-        if new_title != None:
-            record.change_note_title(old_title, new_title)
-            return "Note title changed."
-    return "Note title changing is canceled."
+    title = get_valid_input("Enter note title: ", lambda x: not is_empty_string(
+        x), "Title can't be empty")
+    if not record.is_note_exist(title):
+        raise KeyError(
+            f"The note with this title '{title}' does not exist.")
+    new_title = get_valid_input("Enter new title: ", lambda x: not is_empty_string(
+        x), "Title can't be empty")
+    record.change_note_title(title, new_title)
+    Printer().print_note_changed(record)
 
 
 @handle_error
-def find_note(args, book):
-    name = get_name(args)
+def find_note(args, book: AddressBook):
+    if len(args) == 0:
+        raise IndexError("Enter name")
+    name = " ".join(args)
     record = book.find(name)
-    title = get_input_value("title", record.is_note_exist)
-    if title != None:
-        return record.find_note(title)
-    return "Note searching is canceled."
+    title = get_valid_input("Enter note title: ", lambda x: not is_empty_string(
+        x), "Title can't be empty")
+    Printer().print_note_found(book.find(name).find_note(title))
 
 
 @handle_error
 def add_tag(args, book):
-    name = get_name(args)
+    if len(args) == 0:
+        raise IndexError("Enter name")
+    name = " ".join(args)
     record = book.find(name)
-    title = get_input_value("title", record.is_note_exist)
-    if title != None:
-        note = record.find_note(title)
-        tag = get_input_value("tag", note.is_exist, type_check="exist")
-        if tag != None:
-            record.add_tag(title, tag)
-            return "Tag added."
-    return "Tag adding is canceled."
+    title = get_valid_input("Enter note title: ", lambda x: not is_empty_string(
+        x), "Title can't be empty")
+    if not record.is_note_exist(title):
+        raise KeyError(
+            f"The note with this title '{title}' does not exist.")
+    tag = get_valid_input("Enter tag: ", lambda x: not is_empty_string(
+        x), "Tag can't be empty")
+    record.add_tag(title, tag)
+    Printer().print_tag_added(record, title, tag)
 
 
 @handle_error
 def find_tag(args, book):
     if len(args) == 0:
-        raise IndexError("Enter tag name")
-    tag = args[0]
-    return book.findNotesByTag(tag)
+        raise IndexError("Enter tag")
+    tag = " ".join(args)
+    notes = book.findNotesByTag(tag)
+    Printer().print_notes_found(notes)
 
 
 @handle_error
 def add_email(args, book):
-    if len(args) < 2:
-        raise IndexError("Enter name and email")
-
-    name, email = args
+    if len(args) == 0:
+        raise IndexError("Enter name ")
+    name = " ".join(args)
     contact = book.find(name)
+    email = get_valid_input("Enter email: ", lambda x: Email.is_valid(
+        x), "Invalid email address")
     contact.set_email(email)
-
-    # TODO: Print
-    return f"Email added for {name}."
+    Printer().print_email_added(contact)
 
 
 @handle_error
-def remove_email(args, book):
+def remove_email(args, book: AddressBook):
     if len(args) == 0:
         raise IndexError("Enter name")
-
-    name = args[0]
+    name = " ".join(args)
     contact = book.find(name)
     contact.remove_email()
-
-    # TODO: Print
-    return f"Email removed for {name}."
+    Printer().print_email_removed(contact)
 
 
 @handle_error
 def change_email(args, book):
-    if len(args) < 2:
-        raise IndexError("Enter name and new email")
-
-    name, new_email = args
+    if len(args) == 0:
+        raise IndexError("Enter name")
+    name = " ".join(args)
     contact = book.find(name)
-    contact.set_email(new_email)
-
-    # TODO: Print
-    return f"Email changed for {name}."
+    email = get_valid_input("Enter email: ", lambda x: Email.is_valid(
+        x), "Invalid email address")
+    contact.set_email(email)
+    Printer().print_email_changed(contact)
 
 
 @handle_error
 def add_birthday(args, book):
-    if len(args) < 2:
-        raise IndexError("Enter name and birthday")
-
-    name, birthday = args
+    if len(args) == 0:
+        raise IndexError("Enter name")
+    name = " ".join(args)
     contact = book.find(name)
+    birthday = get_valid_input("Enter birthday: ", lambda x: Birthday.is_valid(
+        x), "Invalid birthday(dd.mm.yyyy)")
     contact.set_birthday(birthday)
-
-    # TODO: Print
-    return f"Birthday added for {name}."
+    Printer().print_birthday_added(contact)
 
 
 @handle_error
 def remove_birthday(args, book):
     if len(args) == 0:
         raise IndexError("Enter name")
-
-    name = args[0]
+    name = " ".join(args)
     contact = book.find(name)
     contact.remove_birthday()
-
-    # TODO: Print
-    return f"Birthday removed for {name}."
+    Printer().print_birthday_removed(contact)
 
 
 @handle_error
 def change_birthday(args, book):
-    if len(args) < 2:
-        raise IndexError("Enter name and new birthday")
-
-    name, new_birthday = args
+    if len(args) == 0:
+        raise IndexError("Enter name")
+    name = " ".join(args)
     contact = book.find(name)
-    contact.set_birthday(new_birthday)
-
-    # TODO: Print
-    return f"Birthday changed for {name}."
+    birthday = get_valid_input("Enter birthday: ", lambda x: Birthday.is_valid(
+        x), "Invalid birthday(dd.mm.yyyy)")
+    contact.set_birthday(birthday)
+    Printer().print_birthday_changed(contact)
 
 
 @handle_error
@@ -260,9 +293,11 @@ def get_birthdays_within_future_range(days, book, is_strict_birthday_date=False)
 
     for record in book.values():
         if record.birthday:
-            birthday_date = datetime.strptime(record.birthday.value, "%d.%m.%Y")
+            birthday_date = datetime.strptime(
+                record.birthday.value, "%d.%m.%Y")
             if not is_strict_birthday_date:
-                user_delta = (birthday_date.replace(year=today.year) - today).days + 1
+                user_delta = (birthday_date.replace(
+                    year=today.year) - today).days + 1
 
                 if 0 <= user_delta <= days:
                     if get_day_of_week_from_date(birthday_date) == "Saturday":
@@ -285,13 +320,14 @@ def get_birthdays_within_future_range(days, book, is_strict_birthday_date=False)
                 if days_until_birthday == int(days):
                     birthdays[f"Birthday in {days}"].append(record.name)
 
-    return birthdays
+    Printer().print_birthdays_found(birthdays)
 
 
 @handle_error
 def get_birthdays_within_next_week(book):
     days_in_week = 7
-    birthdays_within_week = get_birthdays_within_future_range(days_in_week, book, False)
+    birthdays_within_week = get_birthdays_within_future_range(
+        days_in_week, book, False)
     if birthdays_within_week:
         birthdays_string = ""
         for day, names in birthdays_within_week.items():
@@ -321,11 +357,7 @@ def birthdays(args, book):
 
 
 def main():
-    book = (
-        AddressBook.read_from_file()
-        if AddressBook.read_from_file() != None
-        else AddressBook()
-    )
+    book = AddressBook.read_from_file() or AddressBook()
 
     Printer().welcome()
 
@@ -343,39 +375,41 @@ def main():
         elif command == "add":
             add_contact(args, book)
         elif command == "change":
-            print(change_contact(args, book))
+            change_contact(args, book)
+        elif command == "delete":
+            delete_contact(args, book)
         elif command == "phone":
-            print(get_contact_phone(args, book))
+            get_contact_phone(args, book)
         elif command == "all":
-            print(get_all_contacts(book))
+            get_all_contacts(book)
         elif command == "add-note":
-            print(add_note(args, book))
+            add_note(args, book)
         elif command == "remove-note":
-            print(remove_note(args, book))
+            remove_note(args, book)
         elif command == "change-note":
-            print(change_note(args, book))
+            change_note(args, book)
         elif command == "change-note-title":
-            print(change_note_title(args, book))
+            change_note_title(args, book)
         elif command == "find-note":
-            print(find_note(args, book))
+            find_note(args, book)
         elif command == "add-tag":
-            print(add_tag(args, book))
+            add_tag(args, book)
         elif command == "find-tag":
-            print(find_tag(args, book))
+            find_tag(args, book)
         elif command == "add-email":
-            print(add_email(args, book))
+            add_email(args, book)
         elif command == "remove-email":
-            print(remove_email(args, book))
+            remove_email(args, book)
         elif command == "change-email":
-            print(change_email(args, book))
+            change_email(args, book)
         elif command == "add-birthday":
-            print(add_birthday(args, book))
+            add_birthday(args, book)
         elif command == "remove-birthday":
-            print(remove_birthday(args, book))
+            remove_birthday(args, book)
         elif command == "change-birthday":
-            print(change_birthday(args, book))
+            change_birthday(args, book)
         elif command == "birthdays":
-            print(birthdays(args, book))
+            birthdays(args, book)
         else:
             Printer().print_invalid_command()
 

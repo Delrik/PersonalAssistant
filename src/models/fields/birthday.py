@@ -9,11 +9,15 @@ class Birthday(Field):
 
     @staticmethod
     def validate_birthday(birthday):
+        if not Birthday.is_valid(birthday):
+            raise ValueError(f"{birthday} is not a valid birthday.")
+
+    @staticmethod
+    def is_valid(birthday):
         try:
             birthday_date = datetime.strptime(birthday, "%d.%m.%Y")
-
-            # Check if the birthday is later than today's date
             if birthday_date.date() > datetime.now().date():
-                raise ValueError(f"{birthday} is not a valid birthday.")
+                return False
         except ValueError:
-            raise ValueError(f"{birthday} is not a valid birthday.")
+            return False
+        return True
