@@ -10,6 +10,6 @@ class Birthday(Field):
     @staticmethod
     def validate_birthday(birthday):
         try:
-            datetime.strptime(birthday, '%d-%m-%Y')
+            datetime.strptime(birthday, '%d.%m.%Y')
         except ValueError:
-            raise ValueError(f"{birthday} is not a valid birthday. Use the format 'DD-MM-YYYY'.")
+            raise ValueError(f"{birthday} is not a valid birthday. Use the format 'DD.MM.YYYY'.")

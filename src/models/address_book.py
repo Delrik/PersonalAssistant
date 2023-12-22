@@ -1,13 +1,9 @@
-from collections import UserDict, defaultdict
+from collections import UserDict
 import pickle
 from .record import Record
-from datetime import timedelta, datetime
 
 
 class AddressBook(UserDict):
-    def get_day_of_week_from_date(self, input_date):
-        return input_date.strftime("%A")
-
     def add_record(self, name, phone):
         if name in self.data:
             raise KeyError(f"The contact with this name '{name}' already exists.")
@@ -18,24 +14,6 @@ class AddressBook(UserDict):
     def set_address(self, name, address):
         record = self.find(name)
         record.set_address(address)
-
-    def get_birthdays_per_week(self):
-        today = datetime.now()
-        this_week_birthdays = defaultdict(list)
-
-        for record in self.values():
-            if record.birthday:
-                birthday_date = datetime.strptime(record.birthday.value, '%d.%m.%Y')
-                user_delta = (birthday_date.replace(year=today.year) - today).days
-                if 7 > user_delta >= 0:
-                    if self.get_day_of_week_from_date(birthday_date) == 'Saturday':
-                        user_delta += 2
-                    elif self.get_day_of_week_from_date(birthday_date) == 'Sunday':
-                        user_delta += 1
-                    next_birthday = self.get_day_of_week_from_date(today + timedelta(days=user_delta))
-                    this_week_birthdays[next_birthday].append(record.name.value)
-
-        return this_week_birthdays
 
     def find(self, name) -> Record:
         if not name in self.data:
