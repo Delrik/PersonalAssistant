@@ -49,9 +49,6 @@ class Printer(metaclass=SingletonMeta):
     def print_address_changed(self, contact):
         print(f"The address changed.\n {contact}")
 
-    def print_phone_changed(self, contact):
-        print(f"The phone changed.\n {contact}")
-
     def print_email_changed(self, contact):
         print(f"The email changed.\n {contact}")
 
@@ -94,3 +91,21 @@ class Printer(metaclass=SingletonMeta):
 
     def print_birthday_found(self, record):
         print(f"The birthday found.\n {record}")
+
+    def print_phone_added(self, record):
+        print(f"The phone added.\n {record}")
+
+    def print_phone_changed(self, record):
+        print(f"The phone changed.\n {record}")
+
+    def print_phone_removed(self, record):
+        print(f"The phone removed.\n {record}")
+
+    def print_address_added(self, record):
+        print(f"The address added.\n {record}")
+
+    def print_address_changed(self, record):
+        print(f"The address changed.\n {record}")
+
+    def print_address_removed(self, record):
+        print(f"The address removed.\n {record}")

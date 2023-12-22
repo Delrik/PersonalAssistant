@@ -84,7 +84,6 @@ def add_contact(args, book: AddressBook):
     get_contact_data(book, name)
     Printer().print_contact_added(book.find(name))
 
-
 @handle_error
 def change_contact(args, book):
     if len(args) == 0:
@@ -104,6 +103,35 @@ def delete_contact(args, book):
     book.data.pop(name)
     Printer().print_contact_deleted(name)
 
+def add_phone(args, book):
+    if len(args) == 0:
+        raise IndexError("Enter name")
+    name = " ".join(args)
+    record = book.find(name)
+    phone = get_valid_input("Enter phone number: ", lambda x: Phone.is_valid(x))
+    record.add_phone(phone)
+    Printer().print_phone_added(record)
+
+@handle_error
+def change_phone(args, book):
+    if len(args) == 0:
+            raise IndexError("Enter name")
+    name = " ".join(args)
+    record = book.find(name)
+    old_phone = get_valid_input("Enter old phone number: ", lambda x: Phone.is_valid(x))
+    new_phone = get_valid_input("Enter new phone number: ", lambda x: Phone.is_valid(x))
+    record.change_phone(old_phone, new_phone)
+    Printer().print_phone_changed(record)
+
+@handle_error
+def remove_phone(args, book):
+    if len(args) == 0:
+            raise IndexError("Enter name")
+    name = " ".join(args)
+    record = book.find(name)
+    phone = get_valid_input("Enter phone number to remove: ", lambda x: Phone.is_valid(x))
+    record.remove_phone(phone)
+    Printer().print_phone_removed(record)
 
 @handle_error
 def get_contact_phone(args, book):
@@ -112,11 +140,40 @@ def get_contact_phone(args, book):
     name = " ".join(args)
     Printer().print_contact(book.find(name))
 
+@handle_error
+def add_address(args, book):
+    if len(args) == 0:
+        raise(IndexError("Enter name"))
+    name = " ".join(args)
+    record = book.find(name)
+    address = input("Enter address: ").strip()
+    if len(address):
+        record.set_address(address)
+    Printer().print_address_added(record)
+
+@handle_error
+def change_address(args, book):
+    if len(args) == 0:
+        raise(IndexError("Enter name"))
+    name = " ".join(args)
+    record = book.find(name)
+    address = input("Enter new address: ").strip()
+    if len(address):
+        record.set_address(address)    
+    Printer().print_address_changed(record)
+
+@handle_error
+def remove_address(args, book):
+    if len(args) == 0:
+        raise(IndexError("Enter name"))
+    name = " ".join(args)
+    record = book.find(name)
+    record.remove_address()
+    Printer().print_address_removed(record)
 
 @handle_error
 def get_all_contacts(book):
     Printer().print_all_contacts(book)
-
 
 @handle_error
 def add_note(args, book: AddressBook):
@@ -376,10 +433,22 @@ def main():
             add_contact(args, book)
         elif command == "change":
             change_contact(args, book)
+        elif command == "add-phone":
+            add_phone(args, book)
+        elif command == "change-phone":
+            change_phone(args, book)
+        elif command == "remove-phone":
+            remove_phone(args, book)
         elif command == "delete":
             delete_contact(args, book)
         elif command == "phone":
             get_contact_phone(args, book)
+        elif command == "add-address":
+            add_address(args, book)
+        elif command == "change-address":
+            change_address(args, book)
+        elif command == "remove-address":
+            remove_address(args, book)
         elif command == "all":
             get_all_contacts(book)
         elif command == "add-note":

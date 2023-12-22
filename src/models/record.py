@@ -9,16 +9,39 @@ from .fields.note import Note
 class Record:
     def __init__(self, name):
         self.name = Name(name)
-        self.phone = None
+        self.phones = []
+        self.address = None
         self.notes = []
         self.email = None
         self.birthday = None
 
     def add_phone(self, phone):
-        self.phone = Phone(phone)
+        phone = Phone(phone)
+        if str(phone) in [str(p) for p in self.phones]:
+            raise KeyError(
+                f"The phone number {phone} already exists.")
+        self.phones.append(phone)
+
+    def change_phone(self, old_phone, new_phone):
+        for index, phone in enumerate(self.phones):
+            if str(phone.value) == old_phone:
+                self.phones[index] = Phone(new_phone)
+                return
+        raise KeyError(
+                f"{phone} not found, add correct number please.")
+
+    def remove_phone(self, phone):
+        if str(phone) in [str(p) for p in self.phones]:
+            self.phones = [existing_phone for existing_phone in self.phones if existing_phone.value != phone]
+        else:
+            raise KeyError(
+                    f"{phone} not found, add correct number please.")
 
     def set_address(self, address):
         self.address = Address(address)
+
+    def remove_address(self):
+        self.address = None
 
     def add_note(self, title, text):
         if self.is_note_exist(title):
@@ -73,4 +96,4 @@ class Record:
         self.birthday = None
 
     def __str__(self):
-        return f"Contact name: {self.name}, phone: {self.phone}, email: {self.email}, birthday: {self.birthday}, notes: {self.notes}"
+        return f"Contact name: {self.name}, phones: {self.phones}, address: {self.address}, email: {self.email}, birthday: {self.birthday}, notes: {self.notes}"
