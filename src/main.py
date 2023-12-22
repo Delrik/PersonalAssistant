@@ -254,39 +254,70 @@ def change_birthday(args, book):
 
 
 @handle_error
-def get_birthdays_with_future_range(days_range, book):
+def get_birthdays_within_future_range(days, book, is_strict_birthday_date=False):
     today = datetime.now()
     birthdays = defaultdict(list)
 
     for record in book.values():
         if record.birthday:
             birthday_date = datetime.strptime(record.birthday.value, "%d.%m.%Y")
-            user_delta = (birthday_date.replace(year=today.year) - today).days + 1
+            if not is_strict_birthday_date:
+                user_delta = (birthday_date.replace(year=today.year) - today).days + 1
 
-            if 0 <= user_delta < days_range:
-                if get_day_of_week_from_date(birthday_date) == "Saturday":
-                    user_delta += 2
-                elif get_day_of_week_from_date(birthday_date) == "Sunday":
-                    user_delta += 1
+                if 0 <= user_delta <= days:
+                    if get_day_of_week_from_date(birthday_date) == "Saturday":
+                        user_delta += 2
+                    elif get_day_of_week_from_date(birthday_date) == "Sunday":
+                        user_delta += 1
 
-                next_birthday = get_day_of_week_from_date(
-                    today + timedelta(days=user_delta)
-                )
-                birthdays[next_birthday].append(record.name)
+                    next_birthday = get_day_of_week_from_date(
+                        today + timedelta(days=user_delta)
+                    )
+                    birthdays[next_birthday].append(record.name)
+            else:
+                days_until_birthday = (
+                    birthday_date.replace(year=today.year) - today
+                ).days + 1
+                if days_until_birthday < 0:
+                    days_until_birthday = (
+                        birthday_date.replace(year=today.year + 1) - today
+                    ).days + 1
+                if days_until_birthday == int(days):
+                    birthdays[f"Birthday in {days}"].append(record.name)
 
     return birthdays
 
 
-def print_birthdays_within_next_week(book):
+@handle_error
+def get_birthdays_within_next_week(book):
     days_in_week = 7
-    birthdays_within_week = get_birthdays_with_future_range(
-        days_range=days_in_week, book=book
-    )
+    birthdays_within_week = get_birthdays_within_future_range(days_in_week, book, False)
     if birthdays_within_week:
+        birthdays_string = ""
         for day, names in birthdays_within_week.items():
-            print(f"{day}: {', '.join(str(name) for name in names)}")
+            birthdays_string += f"{day}: {', '.join(str(name) for name in names)}\n"
+        return birthdays_string
     else:
-        print("No upcoming birthdays within next week.")
+        return "No upcoming birthdays within next week."
+
+
+@handle_error
+def birthdays(args, book):
+    if len(args) < 1:
+        return get_birthdays_within_next_week(book)
+    elif len(args) == 1:
+        birthdays = get_birthdays_within_future_range(args[0], book, True)
+        if birthdays:
+            birthdays_string = ""
+            for day, names in birthdays.items():
+                birthdays_string += f"{day}: {', '.join(str(name) for name in names)}\n"
+            return birthdays_string
+        else:
+            return f"No one has a birthday {args[0]} days from today."
+    else:
+        raise IndexError(
+            "Enter no arguments to get birthdays within next week or enter specific number to see who has birthday then"
+        )
 
 
 def main():
@@ -344,7 +375,7 @@ def main():
         elif command == "change-birthday":
             print(change_birthday(args, book))
         elif command == "birthdays":
-            print_birthdays_within_next_week(book)
+            print(birthdays(args, book))
         else:
             Printer().print_invalid_command()
 
