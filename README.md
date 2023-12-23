@@ -25,7 +25,7 @@ To interact with the assistant, run the `main.py` file. The assistant supports a
 -   `help`: Retrieve all the commands of a bot
 -   `add [name]`: Add a new contact with a name. It provides next optional inputs step-by-step: `Enter phone number`, `Enter birthday`, `Enter address`, `Enter email`
 -   `change [name]`: Change an existing contact. It provides optional inputs step-by-step to add or change information
--   `delete [name]`: Remove a contact from an address book
+-   `remove [name]`: Remove a contact from an address book
 -   `all`: Display all saved contacts
 -   `add-phone [name]`: Add a phone number to a contact phone list
 -   `change-phone [name]`: Change a phone number in a contact phone list
