@@ -417,6 +417,7 @@ def get_birthdays_within_future_range(days, book, is_strict_birthday_date=False)
     for record in book.values():
         if record.birthday:
             birthday_date = datetime.strptime(record.birthday.value, "%d.%m.%Y")
+
             if not is_strict_birthday_date:
                 user_delta = (birthday_date.replace(year=today.year) - today).days + 1
 
@@ -435,11 +436,16 @@ def get_birthdays_within_future_range(days, book, is_strict_birthday_date=False)
                     birthday_date.replace(year=today.year) - today
                 ).days + 1
                 if days_until_birthday < 0:
+                    # If birthday has already passed this year, calculate for next year
                     days_until_birthday = (
                         birthday_date.replace(year=today.year + 1) - today
                     ).days + 1
+
                 if days_until_birthday == int(days):
-                    birthdays[f"Birthday in {days}"].append(record.name)
+                    formatted_date = (today + timedelta(days=int(days))).strftime(
+                        "%d.%m.%Y"
+                    )
+                    birthdays[formatted_date].append(record.name)
 
     Printer().print_birthdays_found(birthdays)
 
