@@ -375,13 +375,16 @@ def add_birthday(args, book):
         raise IndexError("Please enter a name.")
     name = " ".join(args)
     contact = book.find(name)
-    birthday = get_valid_input(
-        "Enter birthday: ",
-        lambda x: Birthday.is_valid(x),
-        "Please enter a valid birthday in the format dd.mm.yyyy",
-    )
-    contact.set_birthday(birthday)
-    Printer().print_birthday_added(contact)
+    if contact.birthday is not None:
+        Printer().print_error("Only 1 birthday allowed. Use change-birthday to update")
+    else:
+        birthday = get_valid_input(
+            "Enter birthday: ",
+            lambda x: Birthday.is_valid(x),
+            "Please enter a valid birthday in the format dd.mm.yyyy",
+        )
+        contact.set_birthday(birthday)
+        Printer().print_birthday_added(contact)
 
 
 @handle_error
