@@ -124,12 +124,13 @@ class Printer(metaclass=SingletonMeta):
 
     def print_note_found(self, note):
         self.console.print(f"Note found:\n", style="magenta")
-        self.console.print(note[0], style="bold blue")
-        self.console.print(note[1])
+        self.console.print(note)
 
     def print_notes_found(self, notes):
         for note in notes:
-            self.print_note_found(note)
+            self.console.print(f"Note found:\n", style="magenta")
+            self.console.print(note[0], style="bold blue")
+            self.console.print(note[1])
 
     def print_tag_added(self, record, title, tag):
         self.console.print(f"Tag added successfully:\n", style="green")
