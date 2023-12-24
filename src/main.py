@@ -234,7 +234,8 @@ def add_note(args, book: AddressBook):
     name = " ".join(args)
     record = book.find(name)
     title = get_valid_input(
-        "Enter note title: ", lambda x: not is_empty_string(x), "Title can't be empty"
+        "Enter note title: ", lambda x: not is_empty_string(
+            x), "Title can't be empty"
     )
     if record.is_note_exist(title):
         raise KeyError(f"The note with this title '{title}' already exists.")
@@ -252,7 +253,8 @@ def remove_note(args, book: AddressBook):
     name = " ".join(args)
     record = book.find(name)
     title = get_valid_input(
-        "Enter note title: ", lambda x: not is_empty_string(x), "Title can't be empty"
+        "Enter note title: ", lambda x: not is_empty_string(
+            x), "Title can't be empty"
     )
     record.remove_note(title)
     Printer().print_note_removed(title)
@@ -265,12 +267,14 @@ def change_note(args, book: AddressBook):
     name = " ".join(args)
     record = book.find(name)
     title = get_valid_input(
-        "Enter note title: ", lambda x: not is_empty_string(x), "Title can't be empty"
+        "Enter note title: ", lambda x: not is_empty_string(
+            x), "Title can't be empty"
     )
     if not record.is_note_exist(title):
         raise KeyError(f"The note with this title '{title}' does not exist.")
     note = get_valid_input(
-        "Enter new note: ", lambda x: not is_empty_string(x), "Note can't be empty"
+        "Enter new note: ", lambda x: not is_empty_string(
+            x), "Note can't be empty"
     )
     record.change_note(title, note)
     Printer().print_note_changed(record)
@@ -283,12 +287,14 @@ def change_note_title(args, book: AddressBook):
     name = " ".join(args)
     record = book.find(name)
     title = get_valid_input(
-        "Enter note title: ", lambda x: not is_empty_string(x), "Title can't be empty"
+        "Enter note title: ", lambda x: not is_empty_string(
+            x), "Title can't be empty"
     )
     if not record.is_note_exist(title):
         raise KeyError(f"The note with this title '{title}' does not exist.")
     new_title = get_valid_input(
-        "Enter new title: ", lambda x: not is_empty_string(x), "Title can't be empty"
+        "Enter new title: ", lambda x: not is_empty_string(
+            x), "Title can't be empty"
     )
     record.change_note_title(title, new_title)
     Printer().print_note_changed(record)
@@ -301,7 +307,8 @@ def find_note(args, book: AddressBook):
     name = " ".join(args)
     record = book.find(name)
     title = get_valid_input(
-        "Enter note title: ", lambda x: not is_empty_string(x), "Title can't be empty"
+        "Enter note title: ", lambda x: not is_empty_string(
+            x), "Title can't be empty"
     )
     Printer().print_note_found(record.find_note(title))
 
@@ -313,7 +320,8 @@ def add_tag(args, book):
     name = " ".join(args)
     record = book.find(name)
     title = get_valid_input(
-        "Enter note title: ", lambda x: not is_empty_string(x), "Title can't be empty"
+        "Enter note title: ", lambda x: not is_empty_string(
+            x), "Title can't be empty"
     )
     if not record.is_note_exist(title):
         raise KeyError(f"The note with this title '{title}' does not exist.")
@@ -416,10 +424,12 @@ def get_birthdays_within_future_range(days, book, is_strict_birthday_date=False)
 
     for record in book.values():
         if record.birthday:
-            birthday_date = datetime.strptime(record.birthday.value, "%d.%m.%Y")
+            birthday_date = datetime.strptime(
+                record.birthday.value, "%d.%m.%Y")
 
             if not is_strict_birthday_date:
-                user_delta = (birthday_date.replace(year=today.year) - today).days + 1
+                user_delta = (birthday_date.replace(
+                    year=today.year) - today).days + 1
 
                 if 0 <= user_delta <= days:
                     if get_day_of_week_from_date(birthday_date) == "Saturday":
@@ -453,7 +463,8 @@ def get_birthdays_within_future_range(days, book, is_strict_birthday_date=False)
 @handle_error
 def get_birthdays_within_next_week(book):
     days_in_week = 7
-    birthdays_within_week = get_birthdays_within_future_range(days_in_week, book, False)
+    birthdays_within_week = get_birthdays_within_future_range(
+        days_in_week, book, False)
     if birthdays_within_week:
         birthdays_string = ""
         for day, names in birthdays_within_week.items():

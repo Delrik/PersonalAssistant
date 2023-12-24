@@ -47,18 +47,21 @@ class Record:
 
     def add_note(self, title, text):
         if self.is_note_exist(title):
-            raise KeyError(f"The note with this title '{title}' already exists.")
+            raise KeyError(
+                f"The note with this title '{title}' already exists.")
         self.notes.append(Note(title, text))
 
     def find_note(self, title):
         note_index = self.find_note_index_by_title(title)
         if note_index == -1:
-            raise KeyError(f"The note with this title '{title}' does not exist.")
+            raise KeyError(
+                f"The note with this title '{title}' does not exist.")
         return self.notes[note_index]
 
     def remove_note(self, title):
         self.notes = list(
-            filter(lambda note: note.title.lower() != title.lower(), self.notes)
+            filter(lambda note: note.title.lower()
+                   != title.lower(), self.notes)
         )
 
     def change_note(self, title, new_text):
