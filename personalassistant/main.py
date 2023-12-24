@@ -1,13 +1,13 @@
 from collections import defaultdict
-from models.address_book import AddressBook
-from models.fields.birthday import Birthday
-from models.fields.email import Email
-from models.fields.phone import Phone
-from utils.printer import Printer
-from utils.completer import CommandCompleter
+from personalassistant.models.address_book import AddressBook
+from personalassistant.models.fields.birthday import Birthday
+from personalassistant.models.fields.email import Email
+from personalassistant.models.fields.phone import Phone
+from personalassistant.utils.printer import Printer
+from personalassistant.utils.completer import CommandCompleter
 from prompt_toolkit import PromptSession, HTML
 from datetime import timedelta, datetime
-from utils.commands import command_descriptions
+from personalassistant.utils.commands import command_descriptions
 
 
 def handle_error(func):
@@ -22,6 +22,8 @@ def handle_error(func):
 
 @handle_error
 def parse_input(user_input, lower=False):
+    if not user_input.strip():
+        return '', []
     cmd, *args = user_input.split()
     cmd = cmd.strip()
     if lower:
