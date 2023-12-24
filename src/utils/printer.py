@@ -100,7 +100,8 @@ class Printer(metaclass=SingletonMeta):
         self.console.print(record)
 
     def print_contact_deleted(self, name):
-        self.console.print(f"Contact '{name}' deleted successfully.", style="red")
+        self.console.print(
+            f"Contact '{name}' deleted successfully.", style="red")
 
     def print_contact_changed(self, record):
         self.console.print(f"Contact updated successfully:\n", style="blue")
@@ -170,7 +171,8 @@ class Printer(metaclass=SingletonMeta):
         self.console.print(table)
 
     def print_phone_added(self, record):
-        self.console.print(f"Phone number added successfully:.\n", style="green")
+        self.console.print(
+            f"Phone number added successfully:.\n", style="green")
         self.console.print(record)
 
     def print_contact_phones(self, phone_numbers):
@@ -179,11 +181,13 @@ class Printer(metaclass=SingletonMeta):
             self.console.print(phone, style="cyan")
 
     def print_phone_changed(self, record):
-        self.console.print(f"Phone number updated successfully:\n", style="blue")
+        self.console.print(
+            f"Phone number updated successfully:\n", style="blue")
         self.console.print(record)
 
     def print_phone_removed(self, record):
-        self.console.print(f"Phone number removed successfully:\n", style="red")
+        self.console.print(
+            f"Phone number removed successfully:\n", style="red")
         self.console.print(record)
 
     def print_address_added(self, record):
