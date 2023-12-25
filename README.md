@@ -17,6 +17,16 @@ The user interface is implemented in the form of a command line and is based on 
 -   **Persistence**: Save and restore address book data from disk using serialization, ensuring data is not lost between sessions.
 -   **Autocomplete**: Infer what the user wants based on the input text and suggest the nearest command for execution.
 
+## Installation as a Module
+
+The PersonalAssistant can now be installed as a Python module. This makes it easier to deploy and use. To install, follow these steps:
+
+1. Clone the repository or download the source code.
+2. Navigate to the project's root directory.
+3. Run python setup.py install. This command installs the PersonalAssistant module along with its dependencies.
+
+After installation, you can start the assistant by simply running personalassistant from your command line.
+
 ## Getting Started
 
 To interact with the assistant, run the `main.py` file. The assistant supports a range of commands to manage contacts and their information:
